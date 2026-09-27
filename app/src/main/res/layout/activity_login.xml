@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Inicio de sesión (Módulo 1): usuario, contraseña y selección de perfil Empleado / Socio. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:fillViewport="true"
+    tools:context=".ui.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginTop="36dp"
+            android:contentDescription="@string/desc_logo"
+            android:src="@drawable/logo_club" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontVariationSettings="'wght' 900"
+            android:text="@string/club_nombre"
+            android:textColor="@color/primario"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:text="@string/login_titulo"
+            android:textColor="@color/texto_secundario"
+            android:textSize="13sp" />
+
+        <TextView
+            style="@style/TextoEtiqueta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_perfil" />
+
+        <RadioGroup
+            android:id="@+id/rgPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/rbEmpleado"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbEmpleado"
+                style="@style/OpcionSegmentada"
+                android:layout_marginEnd="6dp"
+                android:text="@string/perfil_empleado" />
+
+            <RadioButton
+                android:id="@+id/rbSocio"
+                style="@style/OpcionSegmentada"
+                android:layout_marginStart="6dp"
+                android:text="@string/perfil_socio" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tvEtiquetaUsuario"
+            style="@style/TextoCampo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/hint_usuario" />
+
+        <EditText
+            android:id="@+id/etUsuario"
+            style="@style/CampoTexto"
+            android:hint="@string/hint_usuario"
+            android:inputType="text" />
+
+        <TextView
+            style="@style/TextoCampo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_clave" />
+
+        <EditText
+            android:id="@+id/etClave"
+            style="@style/CampoTexto"
+            android:hint="@string/hint_clave"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_aviso_inhabilitado"
+            android:padding="12dp"
+            android:textColor="@color/estado_inhabilitado"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnIngresar"
+            style="@style/BotonPrimario"
+            android:layout_marginTop="24dp"
+            android:text="@string/btn_ingresar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/pie_institucional"
+            android:textColor="@color/texto_secundario"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

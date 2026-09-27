@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pantalla inicial (Módulo 1): logo, color de fondo y un único botón "Ingreso a la App"
+     (Tema I, 5.1 Sugerencia de movilidad). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".ui.MainActivity">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Imagen cargada desde res/drawable (png, nombre en minúscula y sin espacios). -->
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:contentDescription="@string/desc_logo"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_club" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:fontVariationSettings="'wght' 900"
+        android:text="@string/club_nombre"
+        android:textColor="@color/primario"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/club_subtitulo"
+        android:textColor="@color/texto_secundario"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btnIngreso"
+        style="@style/BotonPrimario"
+        android:text="@string/btn_ingreso_app" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/pie_institucional"
+        android:textColor="@color/texto_secundario"
+        android:textSize="12sp" />
+</LinearLayout>

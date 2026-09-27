@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Listado diario de vencimientos (Módulo 3): título, fecha actual y RecyclerView. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:orientation="vertical"
+    tools:context=".ui.VencimientosActivity">
+
+    <include layout="@layout/barra_superior" />
+
+    <!-- Solapas: vencen hoy/ayer (criterio del libro) y vencidas acumuladas (mejora M05) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:id="@+id/tabHoy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_pestania"
+            android:gravity="center"
+            android:text="@string/tab_hoy"
+            android:textColor="@color/texto_pestania"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tabAcumuladas"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_pestania"
+            android:gravity="center"
+            android:text="@string/tab_acumuladas"
+            android:textColor="@color/texto_pestania"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tarjeta"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvCantHoy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontVariationSettings="'wght' 900"
+                android:textColor="@color/estado_pendiente"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                tools:text="4" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HOY / AYER"
+                android:textColor="@color/texto_secundario"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tarjeta"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvCantAcumuladas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontVariationSettings="'wght' 900"
+                android:textColor="@color/estado_inhabilitado"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                tools:text="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACUMULADAS"
+                android:textColor="@color/texto_secundario"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Fecha actual (LocalDate.now()) y criterio del listado -->
+    <TextView
+        android:id="@+id/tvFechaHoy"
+        style="@style/TextoEtiqueta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="2dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        tools:text="DOMINGO 27 DE SEPTIEMBRE DE 2026" />
+
+    <TextView
+        android:id="@+id/tvCriterio"
+        style="@style/TextoAyuda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        tools:text="Socios cuya cuota vence hoy o venció ayer, por apellido y nombre." />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSocios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="20dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="20dp"
+            tools:listitem="@layout/item_socio" />
+
+        <!-- Estado vacío -->
+        <TextView
+            android:id="@+id/tvVacio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_margin="20dp"
+            android:background="@drawable/bg_tarjeta"
+            android:gravity="center"
+            android:padding="24dp"
+            android:textColor="@color/texto_secundario"
+            android:textSize="14sp"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

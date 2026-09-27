@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Documento de pago (Tema II, 8.4): número, nombre del documento, fecha, emisor,
+     receptor, detalle y monto. Los datos llegan por Intent + putExtra(). -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    tools:context=".ui.ComprobanteActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_icono_ok"
+            android:contentDescription="@null"
+            android:padding="14dp"
+            android:src="@drawable/ic_check" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:fontVariationSettings="'wght' 900"
+            android:text="@string/comprobante_ok"
+            android:textColor="@color/texto"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- El recibo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_tarjeta"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvNombreDocumento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontVariationSettings="'wght' 900"
+                    android:textColor="@color/primario"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="RECIBO DE PAGO" />
+
+                <TextView
+                    android:id="@+id/tvNroDocumento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/texto"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="N° 000012" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvFechaDocumento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/texto_secundario"
+                android:textSize="13sp"
+                tools:text="Fecha: 27/09/2026" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"
+                android:background="@color/borde" />
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="4dp"
+                android:text="Emisor" />
+
+            <TextView
+                android:id="@+id/tvEmisor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/texto"
+                android:textSize="14sp"
+                tools:text="Club Deportivo · CUIT 30-71234567-8\nAtendió: GONZALEZ, Emma" />
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"
+                android:text="Receptor" />
+
+            <TextView
+                android:id="@+id/tvReceptor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/texto"
+                android:textSize="14sp"
+                tools:text="SOSA, Julio\nSocio N° 6 · DNI 29555666" />
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"
+                android:text="Detalle" />
+
+            <TextView
+                android:id="@+id/tvDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/texto"
+                android:textSize="14sp"
+                tools:text="Cuota social mensual\nPeríodo: 27/09/2026 al 27/10/2026\nForma de pago: Efectivo · 1 pago" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="14dp"
+                android:background="@color/borde" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TOTAL"
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMonto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontVariationSettings="'wght' 900"
+                    android:textColor="@color/primario"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    tools:text="$ 18.000" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvEstadoResultante"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:padding="14dp"
+            android:textSize="14sp"
+            tools:text="El socio quedó HABILITADO hasta el 27/10/2026." />
+
+        <Button
+            android:id="@+id/btnVerCarnet"
+            style="@style/BotonPrimario"
+            android:layout_marginTop="20dp"
+            android:text="@string/btn_ver_carnet" />
+
+        <Button
+            android:id="@+id/btnCompartir"
+            style="@style/BotonSecundario"
+            android:layout_marginTop="12dp"
+            android:text="@string/btn_compartir" />
+
+        <Button
+            android:id="@+id/btnVolverMenu"
+            style="@style/BotonSecundario"
+            android:layout_marginTop="12dp"
+            android:text="@string/btn_volver_menu" />
+    </LinearLayout>
+</ScrollView>

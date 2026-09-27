@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fila del listado de vencimientos: apellido y nombre, fecha de vencimiento y acceso
+     directo al cobro. Lo más importante grande arriba, el detalle chico abajo. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_tarjeta_click"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="14dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvApellidoNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/texto"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="RUIZ, Marta" />
+
+        <TextView
+            android:id="@+id/tvNroSocio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/texto_secundario"
+            android:textSize="12sp"
+            tools:text="Socio #2" />
+
+        <TextView
+            android:id="@+id/tvFechaVencimiento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/texto"
+            android:textSize="13sp"
+            tools:text="Vence 27/09/2026" />
+
+        <TextView
+            android:id="@+id/tvTelefono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:drawableStart="@drawable/ic_telefono"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/texto_secundario"
+            android:textSize="12sp"
+            tools:text="11 5555-4444" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvEtiqueta"
+            style="@style/Distintivo"
+            tools:text="VENCE HOY" />
+
+        <Button
+            android:id="@+id/btnCobrar"
+            style="@style/BotonPrimario"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:minWidth="96dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/btn_cobrar"
+            android:textSize="13sp" />
+    </LinearLayout>
+</LinearLayout>

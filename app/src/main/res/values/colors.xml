@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sistema de diseño "Kinetic Noir" definido en la 1ª entrega (Etapa 2, punto 3.2). -->
+<resources>
+    <color name="fondo">#121212</color>
+    <color name="superficie">#242424</color>
+    <color name="superficie_alta">#2E2E2E</color>
+    <color name="borde">#1AFFFFFF</color>
+    <color name="primario">#FFFF00</color>
+    <color name="sobre_primario">#000000</color>
+    <color name="texto">#FFFFFF</color>
+    <color name="texto_secundario">#A0A0A0</color>
+    <color name="texto_deshabilitado">#5C5C5C</color>
+    <color name="estado_habilitado">#00FF66</color>
+    <color name="estado_inhabilitado">#FF3B30</color>
+    <color name="estado_pendiente">#FFB020</color>
+    <color name="fondo_habilitado">#1400FF66</color>
+    <color name="fondo_inhabilitado">#14FF3B30</color>
+    <color name="fondo_pendiente">#14FFB020</color>
+</resources>

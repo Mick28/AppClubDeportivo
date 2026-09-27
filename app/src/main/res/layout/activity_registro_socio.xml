@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Registro de socio (Módulo 1). La usa el empleado. Los campos son los que guarda la base:
+     tabla persona (documento, apellido, nombre, nacimiento, teléfono, correo) y tabla socio
+     (apto físico, alias y contraseña para que el socio entre a la app). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:orientation="vertical"
+    tools:context=".ui.RegistroSocioActivity">
+
+    <include layout="@layout/barra_superior" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/seccion_ficha" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextoCampo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/lbl_tipo_doc" />
+
+                    <Spinner
+                        android:id="@+id/spTipoDoc"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_campo"
+                        android:entries="@array/tipos_documento"
+                        android:popupBackground="@color/superficie" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextoCampo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/lbl_nro_doc" />
+
+                    <EditText
+                        android:id="@+id/etNroDoc"
+                        style="@style/CampoTexto"
+                        android:hint="Ej: 30111222"
+                        android:inputType="number"
+                        android:maxLength="9" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_apellido" />
+
+            <EditText
+                android:id="@+id/etApellido"
+                style="@style/CampoTexto"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLength="40" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_nombre" />
+
+            <EditText
+                android:id="@+id/etNombre"
+                style="@style/CampoTexto"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLength="40" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_fecha_nac" />
+
+            <!-- No se escribe: al tocarlo se abre un DatePickerDialog (evita fechas mal tipeadas). -->
+            <EditText
+                android:id="@+id/etFechaNac"
+                style="@style/CampoTexto"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:drawableEnd="@drawable/ic_calendario"
+                android:focusable="false"
+                android:hint="dd/mm/aaaa"
+                android:inputType="none" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_telefono" />
+
+            <EditText
+                android:id="@+id/etTelefono"
+                style="@style/CampoTexto"
+                android:hint="Ej: 11 1234 5678"
+                android:inputType="phone"
+                android:maxLength="20" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_email" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                style="@style/CampoTexto"
+                android:hint="nombre@correo.com"
+                android:inputType="textEmailAddress"
+                android:maxLength="60" />
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/seccion_apto" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_tarjeta"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <CheckBox
+                    android:id="@+id/cbAptoFisico"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/primario"
+                    android:text="@string/cb_apto"
+                    android:textColor="@color/texto"
+                    android:textSize="16sp" />
+
+                <TextView
+                    style="@style/TextoAyuda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ayuda_apto" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/seccion_acceso" />
+
+            <TextView
+                style="@style/TextoAyuda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:text="@string/ayuda_alias" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_alias" />
+
+            <EditText
+                android:id="@+id/etAlias"
+                style="@style/CampoTexto"
+                android:hint="Ej: mruiz"
+                android:inputType="text"
+                android:maxLength="20" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_clave" />
+
+            <EditText
+                android:id="@+id/etClave"
+                style="@style/CampoTexto"
+                android:hint="Mínimo 6 caracteres"
+                android:inputType="textPassword"
+                android:maxLength="30" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_clave_repetida" />
+
+            <EditText
+                android:id="@+id/etClaveRepetida"
+                style="@style/CampoTexto"
+                android:inputType="textPassword"
+                android:maxLength="30" />
+
+            <Button
+                android:id="@+id/btnGuardar"
+                style="@style/BotonPrimario"
+                android:layout_marginTop="28dp"
+                android:text="@string/btn_guardar_socio" />
+
+            <Button
+                android:id="@+id/btnCancelar"
+                style="@style/BotonSecundario"
+                android:layout_marginTop="12dp"
+                android:text="@string/btn_cancelar" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

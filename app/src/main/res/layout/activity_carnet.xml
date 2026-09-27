@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Carnet digital del socio (Módulo 2, Tema II 9). Mismo diseño para todos: cambian
+     los datos del socio. Lo ven el empleado (después del alta y el cobro) y el socio
+     (cuando entra con su alias y contraseña). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:orientation="vertical"
+    tools:context=".ui.CarnetActivity">
+
+    <include layout="@layout/barra_superior" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvBienvenidaSocio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontVariationSettings="'wght' 900"
+                android:textColor="@color/texto"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Hola, Ana"
+                tools:visibility="visible" />
+
+            <!-- ======== La credencial ======== -->
+            <LinearLayout
+                android:id="@+id/llCarnet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_carnet"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_carnet_banda"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontVariationSettings="'wght' 900"
+                        android:text="@string/club_nombre"
+                        android:textColor="@color/sobre_primario"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/carnet_titulo"
+                        android:textColor="@color/sobre_primario"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <ImageView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:contentDescription="@string/desc_logo"
+                        android:src="@drawable/logo_club" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvApellidoCarnet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontVariationSettings="'wght' 900"
+                            android:textColor="@color/texto"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            tools:text="GOMEZ" />
+
+                        <TextView
+                            android:id="@+id/tvNombreCarnet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/texto"
+                            android:textSize="18sp"
+                            tools:text="Ana" />
+
+                        <TextView
+                            android:id="@+id/tvDocumentoCarnet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="13sp"
+                            tools:text="DNI 30111222" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="18dp"
+                    android:background="@color/borde" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SOCIO N°"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvNroSocioCarnet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontVariationSettings="'wght' 900"
+                            android:textColor="@color/primario"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            tools:text="0001" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CUOTA PAGA HASTA"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvVencCuotaCarnet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/texto"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="17/10/2026" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:paddingBottom="18dp">
+
+                    <TextView
+                        android:id="@+id/tvVigenciaCarnet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/texto_secundario"
+                        android:textSize="12sp"
+                        tools:text="Emitido 17/09/2026 · Válido hasta 17/09/2027" />
+
+                    <TextView
+                        android:id="@+id/tvEstadoCarnet"
+                        style="@style/Distintivo"
+                        tools:text="HABILITADO" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Motivo del estado (texto además del color: nunca solo color) -->
+            <TextView
+                android:id="@+id/tvMotivoEstado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:padding="14dp"
+                android:textSize="14sp"
+                tools:text="Podés ingresar al club y realizar actividades." />
+
+            <!-- Socio registrado que todavía no pagó: no tiene carnet -->
+            <TextView
+                android:id="@+id/tvSinCarnet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_aviso_pendiente"
+                android:padding="16dp"
+                android:textColor="@color/estado_pendiente"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnRegistrarApto"
+                style="@style/BotonSecundario"
+                android:layout_marginTop="20dp"
+                android:text="@string/btn_registrar_apto"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnCobrarDesdeCarnet"
+                style="@style/BotonPrimario"
+                android:layout_marginTop="12dp"
+                android:text="@string/menu_cobro"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnCerrarSesion"
+        style="@style/BotonPeligro"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:text="@string/btn_cerrar_sesion"
+        android:visibility="gone" />
+</LinearLayout>

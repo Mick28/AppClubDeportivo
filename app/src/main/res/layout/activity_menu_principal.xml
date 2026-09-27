@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú Principal del empleado (Módulo 1): Registro de socio, Cobro de cuota,
+     Ver vencimientos y Salir (Tema I, 5.1). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:orientation="vertical"
+    tools:context=".ui.MenuPrincipalActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_barra_superior"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/desc_logo"
+            android:src="@drawable/logo_club" />
+
+        <TextView
+            style="@style/TextoTitulo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:text="@string/club_nombre" />
+
+        <TextView
+            android:id="@+id/tvRol"
+            style="@style/Distintivo"
+            android:background="@drawable/bg_tarjeta"
+            android:textColor="@color/texto_secundario" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvSaludo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontVariationSettings="'wght' 900"
+                android:textColor="@color/texto"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                tools:text="Buenas tardes,\nEMMA" />
+
+            <TextView
+                android:id="@+id/tvFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/texto_secundario"
+                android:textSize="14sp"
+                tools:text="Domingo 27 de septiembre de 2026" />
+
+            <!-- Tarjeta con la cantidad de vencimientos del día (resultado del control automático). -->
+            <LinearLayout
+                android:id="@+id/cardVencimientos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_tarjeta_aviso"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvCantVencenHoy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontVariationSettings="'wght' 900"
+                    android:textColor="@color/estado_pendiente"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:text="2" />
+
+                <TextView
+                    android:id="@+id/tvTextoVencenHoy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/texto"
+                    android:textSize="15sp"
+                    tools:text="socios con cuota que vence hoy" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_flecha_derecha" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/TextoEtiqueta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/menu_que_hacer" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnRegistroSocio"
+                    style="@style/TarjetaMenu"
+                    android:layout_marginEnd="6dp"
+                    android:drawableTop="@drawable/ic_persona_agregar"
+                    android:text="@string/menu_registro" />
+
+                <Button
+                    android:id="@+id/btnCobroCuota"
+                    style="@style/TarjetaMenu"
+                    android:layout_marginStart="6dp"
+                    android:drawableTop="@drawable/ic_pago"
+                    android:text="@string/menu_cobro" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnVerVencimientos"
+                style="@style/TarjetaMenu"
+                android:layout_width="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_weight="0"
+                android:drawableTop="@drawable/ic_calendario"
+                android:text="@string/menu_vencimientos" />
+
+            <TextView
+                android:id="@+id/tvAvisoRol"
+                style="@style/TextoAyuda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/aviso_rol_consulta"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnSalir"
+        style="@style/BotonPeligro"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:drawableStart="@drawable/ic_salir"
+        android:paddingStart="24dp"
+        android:paddingEnd="48dp"
+        android:text="@string/menu_salir" />
+</LinearLayout>

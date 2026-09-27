@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.ClubDeportivo" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/primario</item>
+        <item name="colorPrimaryDark">@color/fondo</item>
+        <item name="colorAccent">@color/primario</item>
+        <item name="colorControlNormal">@color/texto_secundario</item>
+        <item name="colorControlActivated">@color/primario</item>
+        <item name="android:windowBackground">@color/fondo</item>
+        <item name="android:statusBarColor">@color/fondo</item>
+        <item name="android:navigationBarColor">@color/fondo</item>
+        <item name="android:textColorPrimary">@color/texto</item>
+        <item name="android:textColorSecondary">@color/texto_secundario</item>
+        <item name="android:textColorHint">@color/texto_deshabilitado</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="alertDialogTheme">@style/Theme.ClubDeportivo.Dialogo</item>
+        <item name="android:datePickerDialogTheme">@style/Theme.ClubDeportivo.DatePicker</item>
+    </style>
+
+    <style name="Theme.ClubDeportivo.Dialogo" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/primario</item>
+        <item name="android:background">@color/superficie</item>
+        <item name="android:textColorPrimary">@color/texto</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="Theme.ClubDeportivo.DatePicker" parent="android:Theme.Material.Dialog">
+        <item name="android:colorAccent">@color/primario</item>
+        <item name="android:colorPrimary">@color/superficie</item>
+        <item name="android:windowBackground">@color/superficie</item>
+    </style>
+
+    <!-- ===== Textos ===== -->
+    <style name="TextoTitulo">
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextoEtiqueta">
+        <item name="android:textColor">@color/texto_secundario</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="TextoCampo">
+        <item name="android:textColor">@color/texto_secundario</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
+
+    <style name="TextoAyuda">
+        <item name="android:textColor">@color/texto_secundario</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_marginTop">6dp</item>
+    </style>
+
+    <!-- ===== Campos ===== -->
+    <style name="CampoTexto">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:background">@drawable/bg_campo</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:textColorHint">@color/texto_deshabilitado</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:importantForAutofill">no</item>
+    </style>
+
+    <!-- ===== Botones ===== -->
+    <style name="BotonPrimario" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:background">@drawable/bg_boton_primario</item>
+        <item name="android:textColor">@color/sobre_primario</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="BotonSecundario" parent="BotonPrimario">
+        <item name="android:background">@drawable/bg_boton_secundario</item>
+        <item name="android:textColor">@color/texto</item>
+    </style>
+
+    <style name="BotonPeligro" parent="BotonPrimario">
+        <item name="android:background">@drawable/bg_boton_peligro</item>
+        <item name="android:textColor">@color/estado_inhabilitado</item>
+    </style>
+
+    <!-- Opción de un grupo (RadioButton con aspecto de botón segmentado) -->
+    <style name="OpcionSegmentada">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_opcion</item>
+        <item name="android:textColor">@color/texto_opcion</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Tarjeta de acceso directo del Menú Principal -->
+    <style name="TarjetaMenu" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">120dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/bg_tarjeta_click</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:drawableTint">@color/primario</item>
+        <item name="android:paddingTop">24dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Distintivo de estado (Habilitado / Inhabilitado / Pendiente) -->
+    <style name="Distintivo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+</resources>

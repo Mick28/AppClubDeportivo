@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tipos de documento: la búsqueda de socio por "tipo y número de documento"
+         es la opción "que nunca falla" según el libro (Tema II, 8.3). -->
+    <string-array name="tipos_documento">
+        <item>DNI</item>
+        <item>LE</item>
+        <item>LC</item>
+        <item>PAS</item>
+    </string-array>
+</resources>
