@@ -65,8 +65,8 @@ Prueba a compilar el paquete Debug del proyecto desde consola:
 
 ## Instalación y ejecución
 
-1. Descomprimir `ClubDeportivo_App_Grupo5.zip`.
-2. En Android Studio: **File › Open…** y elegir la carpeta `ClubDeportivo` (la que contiene `settings.gradle.kts`).
+1. Descomprimir `AppClubDeportivo-main.zip` (se descarga desde GitHub con **Code › Download ZIP**).
+2. En Android Studio: **File › Open…** y elegir la carpeta `AppClubDeportivo-main` (la que contiene el archivo `settings.gradle.kts`). Si al descomprimir quedó una carpeta `AppClubDeportivo-main` dentro de otra con el mismo nombre, elegir la de adentro.
 3. Esperar el **Gradle Sync** (barra inferior). Si pide instalar SDK/Build-Tools, aceptar.
 4. Crear un emulador si no hay uno: **Device Manager › Create Device** (por ejemplo Pixel 7, API 34).
 5. Presionar **Run ▶** (`Shift+F10`). La app arranca en la pantalla inicial.
@@ -109,7 +109,7 @@ para que el listado diario siempre tenga datos.
 Estructura completa de archivos y carpetas versiónadas en el repositorio (excluyendo archivos autogenerados o locales filtrados por `.gitignore` como `.gradle/`, `.idea/`, `build/` o `local.properties`):
 
 ```text
-ClubDeportivo/
+AppClubDeportivo/
 ├── .gitignore                      # Reglas de exclusión de Git para archivos temporales y locales
 ├── README.md                       # Documentación principal del proyecto
 ├── build.gradle.kts                # Configuración de Gradle a nivel de proyecto (plugins)
