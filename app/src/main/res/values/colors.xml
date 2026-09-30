@@ -9,7 +9,7 @@
     <color name="sobre_primario">#000000</color>
     <color name="texto">#FFFFFF</color>
     <color name="texto_secundario">#A0A0A0</color>
-    <color name="texto_deshabilitado">#5C5C5C</color>
+    <color name="texto_deshabilitado">#8A8A8A</color> // <!-- antes #5C5C5C -->
     <color name="estado_habilitado">#00FF66</color>
     <color name="estado_inhabilitado">#FF3B30</color>
     <color name="estado_pendiente">#FFB020</color>

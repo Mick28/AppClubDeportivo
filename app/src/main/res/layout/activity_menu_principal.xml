@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Menú Principal del empleado (Módulo 1): Registro de socio, Cobro de cuota,
+<?xml version="1.0" encoding="utf-8"?><!-- Menú Principal del empleado (Módulo 1): Registro de socio, Cobro de cuota,
      Ver vencimientos y Salir (Tema I, 5.1). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -51,10 +50,9 @@
 
             <TextView
                 android:id="@+id/tvSaludo"
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-               android:fontFamily="@font/montserrat_black"
+                android:fontFamily="@font/montserrat_black"
                 android:textColor="@color/texto"
                 android:textSize="28sp"
                 android:textStyle="bold"
@@ -90,7 +88,7 @@
                     android:id="@+id/tvCantVencenHoy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                   android:fontFamily="@font/montserrat_black"
+                    android:fontFamily="@font/montserrat_black"
                     android:textColor="@color/estado_pendiente"
                     android:textSize="30sp"
                     android:textStyle="bold"
