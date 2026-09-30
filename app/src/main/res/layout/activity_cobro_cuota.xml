@@ -172,7 +172,7 @@
                     android:id="@+id/etMonto"
                     style="@style/CampoTexto"
                     android:layout_height="64dp"
-                    android:fontVariationSettings="'wght' 900"
+                   android:fontFamily="@font/montserrat_black"
                     android:inputType="numberDecimal"
                     android:maxLength="9"
                     android:textSize="26sp"
