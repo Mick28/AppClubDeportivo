@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:fontVariationSettings="'wght' 900"
+       android:fontFamily="@font/montserrat_black"
         android:text="@string/club_nombre"
         android:textColor="@color/primario"
         android:textSize="34sp"
