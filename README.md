@@ -42,15 +42,31 @@ Ejecuta la prueba de versión de Gradle para confirmar que el wrapper reconoce t
 
 #### 3. Verificar herramientas de Android (ADB)
 ```bash
+# En Windows (PowerShell):
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" version
+
+# En CMD de Windows:
+"%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe" version
+
+# Si agregaste ADB al PATH en Windows, o en Linux / macOS:
 adb version
 ```
 > **Esperado:** Muestra la versión de *Android Debug Bridge*.
 
 #### 4. Verificar emuladores o dispositivos conectados
 ```bash
+# En Windows (PowerShell):
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" devices
+
+# En CMD de Windows:
+"%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe" devices
+
+# Si agregaste ADB al PATH en Windows, o en Linux / macOS:
 adb devices
 ```
 > **Esperado:** Lista de dispositivos o emuladores activos (ej. `emulator-5554 device`).
+
+> **💡 Nota sobre el error en Windows:** Si al escribir simplemente `adb` recibes el mensaje *"El término 'adb' no se reconoce como nombre de un cmdlet..."*, se debe a que la herramienta `adb.exe` está dentro de la carpeta del SDK de Android y no está agregada por defecto a las variables de entorno (`PATH`) de Windows. Utiliza la ruta directa mediante `$env:LOCALAPPDATA` mostrada arriba, o agrega la carpeta `C:\Users\<TuUsuario>\AppData\Local\Android\Sdk\platform-tools` a la variable de entorno `PATH` de tu sistema.
 
 #### 5. Verificar la compilación del proyecto (Build Check)
 Prueba a compilar el paquete Debug del proyecto desde consola:
