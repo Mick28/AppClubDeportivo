@@ -33,7 +33,7 @@ class BaseDatosClub(context: Context) :
 
     companion object {
         const val NOMBRE_BD = "clubdeportivo.db"
-        const val VERSION_BD = 1
+        const val VERSION_BD = 2
 
         // Las sentencias CREATE TABLE se agrupan como constantes en el companion object,
         // tal como sugiere el libro de la Etapa 3 para bases con varias tablas relacionadas.
