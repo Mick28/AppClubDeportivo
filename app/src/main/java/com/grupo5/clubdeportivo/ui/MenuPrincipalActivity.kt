@@ -16,11 +16,9 @@ import java.time.LocalDate
 
 /**
  * Menú Principal del empleado (Módulo 1): Registro de socio, Cobro de cuota,
- * Ver vencimientos, Editar socio (Módulo 4), Visita no socio (Módulo 5) y Salir.
- * Muestra además la tarjeta con los vencimientos del día.
+ * Ver vencimientos y Salir. Muestra además la tarjeta con los vencimientos del día.
  *
- * Control de acceso por rol (mejora M06): el rol CONSULTA no puede registrar, cobrar ni
- * editar socios, pero sí registrar visitas de no socio (cobro de mostrador).
+ * Control de acceso por rol (mejora M06): el rol CONSULTA no puede registrar ni cobrar.
  */
 class MenuPrincipalActivity : AppCompatActivity() {
 
@@ -51,17 +49,9 @@ class MenuPrincipalActivity : AppCompatActivity() {
         val btnCobro = findViewById<Button>(R.id.btnCobroCuota)
         val btnVencimientos = findViewById<Button>(R.id.btnVerVencimientos)
         val cardVencimientos = findViewById<LinearLayout>(R.id.cardVencimientos)
-        val btnSalir = findViewById<Button>(R.id.btnSalir)
         val btnEditarSocio = findViewById<Button>(R.id.btnEditarSocio)
         val btnNoSocio = findViewById<Button>(R.id.btnNoSocio)
-
-        // 3ª entrega: accesos a los módulos 4 (HU03, M01) y 5 (HU09).
-        btnEditarSocio.setOnClickListener {
-            startActivity(Intent(this, EditarSocioActivity::class.java))
-        }
-        btnNoSocio.setOnClickListener {
-            startActivity(Intent(this, RegistroNoSocioActivity::class.java))
-        }
+        val btnSalir = findViewById<Button>(R.id.btnSalir)
 
         btnRegistro.setOnClickListener {
             startActivity(Intent(this, RegistroSocioActivity::class.java))
@@ -74,6 +64,13 @@ class MenuPrincipalActivity : AppCompatActivity() {
         }
         btnVencimientos.setOnClickListener(abrirVencimientos)
         cardVencimientos.setOnClickListener(abrirVencimientos)
+
+        btnEditarSocio.setOnClickListener {
+            startActivity(Intent(this, EditarSocioActivity::class.java))
+        }
+        btnNoSocio.setOnClickListener {
+            startActivity(Intent(this, RegistroNoSocioActivity::class.java))
+        }
 
         btnSalir.setOnClickListener {
             AlertDialog.Builder(this)
@@ -90,7 +87,7 @@ class MenuPrincipalActivity : AppCompatActivity() {
         if (!empleado.esAdministrador) {
             btnRegistro.isEnabled = false
             btnCobro.isEnabled = false
-            btnEditarSocio.isEnabled = false // CONSULTA no edita socios
+            btnEditarSocio.isEnabled = false
             btnRegistro.alpha = 0.4f
             btnCobro.alpha = 0.4f
             btnEditarSocio.alpha = 0.4f

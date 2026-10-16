@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Visita de no socio (Módulo 5, 3ª entrega, HU09). Campos según la tabla no_socio:
-     persona (documento, apellido, nombre), actividad de la cartilla e importe.
-     La fecha y hora las toma la app. Prototipo de referencia: P16 · Pase diario. -->
+<!-- Registro de visita de no socio (HU09).
+     Permite registrar la visita y el cobro de una persona que no es socio. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -32,61 +31,73 @@
                 android:layout_height="wrap_content"
                 android:text="@string/seccion_visitante" />
 
-            <LinearLayout
+            <TextView
+                style="@style/TextoCampo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:text="@string/lbl_tipo_doc" />
 
-                <Spinner
-                    android:id="@+id/spTipoDoc"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_campo"
-                    android:popupBackground="@color/superficie" />
-
-                <EditText
-                    android:id="@+id/etNroDoc"
-                    style="@style/CampoTexto"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:hint="@string/hint_nro_doc"
-                    android:inputType="number"
-                    android:maxLength="9" />
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/spTipoDoc"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_campo"
+                android:popupBackground="@color/superficie" />
 
             <TextView
                 style="@style/TextoCampo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_nro_doc" />
+
+            <EditText
+                android:id="@+id/etNroDoc"
+                style="@style/CampoTexto"
+                android:hint="@string/hint_nro_doc"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="9" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_apellido" />
 
             <EditText
                 android:id="@+id/etApellido"
                 style="@style/CampoTexto"
-                android:inputType="textPersonName|textCapCharacters"
-                android:maxLength="40" />
+                android:hint="@string/hint_apellido"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLength="60" />
 
             <TextView
                 style="@style/TextoCampo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_nombre" />
 
             <EditText
                 android:id="@+id/etNombre"
                 style="@style/CampoTexto"
+                android:hint="@string/hint_nombre"
+                android:imeOptions="actionNext"
                 android:inputType="textPersonName|textCapWords"
-                android:maxLength="40" />
+                android:maxLength="60" />
 
             <!-- ============ Actividad y cobro ============ -->
             <TextView
                 style="@style/TextoEtiqueta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
                 android:text="@string/seccion_actividad" />
+
+            <TextView
+                style="@style/TextoCampo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_actividad" />
 
             <Spinner
                 android:id="@+id/spActividad"
@@ -96,36 +107,32 @@
                 android:popupBackground="@color/superficie" />
 
             <TextView
-                style="@style/TextoEtiqueta"
+                style="@style/TextoCampo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/seccion_importe" />
+                android:text="@string/lbl_monto_visita" />
 
             <EditText
                 android:id="@+id/etMonto"
                 style="@style/CampoTexto"
                 android:layout_height="64dp"
                 android:fontFamily="@font/montserrat_black"
+                android:hint="0"
+                android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
                 android:maxLength="9"
                 android:textSize="26sp"
                 android:textStyle="bold"
-                tools:text="12000" />
+                tools:text="3500" />
 
             <TextView
                 android:id="@+id/tvAyudaMonto"
                 style="@style/TextoAyuda"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Precio de cartilla: $ 12.000 por turno" />
+                tools:text="Precio de cartilla: $3.500,00 por día" />
 
-            <TextView
-                style="@style/TextoAyuda"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/ayuda_no_socio" />
-
+            <!-- Botones -->
             <Button
                 android:id="@+id/btnRegistrarVisita"
                 style="@style/BotonPrimario"
@@ -135,8 +142,9 @@
             <Button
                 android:id="@+id/btnCancelar"
                 style="@style/BotonSecundario"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/btn_cancelar" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Menú Principal del empleado (Módulo 1): Registro de socio, Cobro de cuota,
-     Ver vencimientos, Editar socio y Visita no socio (3ª entrega) y Salir (Tema I, 5.1). -->
+     Ver vencimientos y Salir (Tema I, 5.1). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -147,7 +147,6 @@
                 android:drawableTop="@drawable/ic_calendario"
                 android:text="@string/menu_vencimientos" />
 
-            <!-- 3ª entrega: tercera fila de tarjetas con los módulos 4 y 5 (M12). -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,14 +157,14 @@
                     android:id="@+id/btnEditarSocio"
                     style="@style/TarjetaMenu"
                     android:layout_marginEnd="6dp"
-                    android:drawableTop="@drawable/ic_editar"
-                    android:text="@string/menu_editar_socio" />
+                    android:drawableTop="@drawable/ic_persona_agregar"
+                    android:text="@string/menu_editar" />
 
                 <Button
                     android:id="@+id/btnNoSocio"
                     style="@style/TarjetaMenu"
                     android:layout_marginStart="6dp"
-                    android:drawableTop="@drawable/ic_pase"
+                    android:drawableTop="@drawable/ic_check"
                     android:text="@string/menu_no_socio" />
             </LinearLayout>
 
