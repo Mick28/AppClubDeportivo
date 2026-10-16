@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Editar socio (Módulo 4, 3ª entrega): HU03 edición de contacto y M01 baja lógica.
+     Dos secciones que se alternan: búsqueda del socio (mismo patrón que el cobro de cuota)
+     y ficha con los datos editables. Prototipo de referencia: P06 + P07. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo"
+    android:orientation="vertical"
+    tools:context=".ui.EditarSocioActivity">
+
+    <include layout="@layout/barra_superior" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp">
+
+            <!-- ============ Búsqueda del socio ============ -->
+            <LinearLayout
+                android:id="@+id/llBusqueda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextoEtiqueta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seccion_buscar" />
+
+                <RadioGroup
+                    android:id="@+id/rgCriterio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checkedButton="@+id/rbPorNumero"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbPorNumero"
+                        style="@style/OpcionSegmentada"
+                        android:layout_marginEnd="6dp"
+                        android:text="@string/criterio_numero" />
+
+                    <RadioButton
+                        android:id="@+id/rbPorDocumento"
+                        style="@style/OpcionSegmentada"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/criterio_documento" />
+                </RadioGroup>
+
+                <EditText
+                    android:id="@+id/etNroSocio"
+                    style="@style/CampoTexto"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/hint_nro_socio"
+                    android:imeOptions="actionSearch"
+                    android:inputType="number"
+                    android:maxLength="7" />
+
+                <LinearLayout
+                    android:id="@+id/llPorDocumento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Spinner
+                        android:id="@+id/spTipoDoc"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_campo"
+                        android:popupBackground="@color/superficie" />
+
+                    <EditText
+                        android:id="@+id/etNroDoc"
+                        style="@style/CampoTexto"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:hint="@string/hint_nro_doc"
+                        android:imeOptions="actionSearch"
+                        android:inputType="number"
+                        android:maxLength="9" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnBuscar"
+                    style="@style/BotonSecundario"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/btn_buscar" />
+            </LinearLayout>
+
+            <!-- ============ Ficha y edición (visible cuando hay un socio) ============ -->
+            <LinearLayout
+                android:id="@+id/llFormulario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_tarjeta"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvSocioNombre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/texto"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            tools:text="GOMEZ, Ana" />
+
+                        <TextView
+                            android:id="@+id/tvSocioDatos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="13sp"
+                            tools:text="Socio N° 1 · DNI 30111222" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvEstado"
+                        style="@style/Distintivo"
+                        tools:text="HABILITADO" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/TextoEtiqueta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seccion_contacto" />
+
+                <TextView
+                    style="@style/TextoCampo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/lbl_telefono" />
+
+                <EditText
+                    android:id="@+id/etTelefono"
+                    style="@style/CampoTexto"
+                    android:hint="Ej: 11 1234 5678"
+                    android:inputType="phone"
+                    android:maxLength="20" />
+
+                <TextView
+                    style="@style/TextoCampo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_email" />
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    style="@style/CampoTexto"
+                    android:hint="nombre@correo.com"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="60" />
+
+                <TextView
+                    style="@style/TextoAyuda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ayuda_editar_identidad" />
+
+                <Button
+                    android:id="@+id/btnGuardar"
+                    style="@style/BotonPrimario"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/btn_guardar_cambios" />
+
+                <Button
+                    android:id="@+id/btnDarDeBaja"
+                    style="@style/BotonPeligro"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/btn_dar_de_baja" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnCancelar"
+                style="@style/BotonSecundario"
+                android:layout_marginTop="12dp"
+                android:text="@string/btn_cancelar" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

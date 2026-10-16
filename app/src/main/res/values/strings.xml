@@ -67,5 +67,23 @@
     <string name="tab_hoy">VENCEN HOY / AYER</string>
     <string name="tab_acumuladas">VENCIDAS ACUMULADAS</string>
     <string name="btn_cobrar">COBRAR</string>
-    <string name="aviso_rol_consulta">Tu usuario es de consulta: podés ver vencimientos y carnets, pero no registrar socios ni cobrar.</string>
+    <string name="aviso_rol_consulta">Tu usuario es de consulta: podés ver vencimientos y carnets y registrar visitas de no socios, pero no registrar, cobrar ni editar socios.</string>
+
+    <!-- 3ª entrega · Menú Principal (M12) -->
+    <string name="menu_editar_socio">Editar socio</string>
+    <string name="menu_no_socio">Visita no socio</string>
+
+    <!-- 3ª entrega · Módulo 4: edición de contacto (HU03) y baja lógica (M01) -->
+    <string name="editar_titulo">EDITAR SOCIO</string>
+    <string name="seccion_contacto">DATOS DE CONTACTO</string>
+    <string name="ayuda_editar_identidad">Documento, apellido, nombre y fecha de nacimiento son datos de identidad y no se modifican desde la app.</string>
+    <string name="btn_guardar_cambios">GUARDAR CAMBIOS</string>
+    <string name="btn_dar_de_baja">DAR DE BAJA AL SOCIO</string>
+
+    <!-- 3ª entrega · Módulo 5: visita de no socio (HU09) -->
+    <string name="no_socio_titulo">VISITA NO SOCIO</string>
+    <string name="seccion_visitante">DATOS DEL VISITANTE</string>
+    <string name="seccion_actividad">ACTIVIDAD</string>
+    <string name="ayuda_no_socio">La fecha y hora de la visita se registran automáticamente. Si el documento es de un socio activo, se le cobra la cuota y no el pase.</string>
+    <string name="btn_registrar_visita">REGISTRAR VISITA</string>
 </resources>

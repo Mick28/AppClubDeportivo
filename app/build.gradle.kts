@@ -13,8 +13,8 @@ android {
         // tal como lo propone el libro de la Etapa 4 (Tema I, 4.3 Uso de fechas).
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "2.0"
+        versionCode = 3
+        versionName = "3.0"
     }
 
     buildTypes {

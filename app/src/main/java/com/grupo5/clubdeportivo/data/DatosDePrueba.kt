@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import com.grupo5.clubdeportivo.util.Seguridad
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Carga inicial de la base: usuarios de prueba (al menos un empleado y un socio, como pide
@@ -13,10 +15,12 @@ import java.time.LocalDate
  *
  * Usuarios de prueba:
  *   EMPLEADO  admin      / admin123   (rol ADMIN: acceso completo)
- *   EMPLEADO  recepcion  / recep123   (rol CONSULTA: solo vencimientos y carnets)
+ *   EMPLEADO  recepcion  / recep123   (rol CONSULTA: vencimientos, carnets y visitas de no socio)
  *   SOCIO     agomez     / socio123   (cuota al día, carnet vigente)
- *   SOCIO     jsosa      / socio123   (cuota vencida hace 14 días)
+ *   SOCIO     jsosa      / socio123   (cuota vencida hace 14 días; candidato a la prueba de baja)
  *   SOCIO     arubio     / socio123   (registrado sin primera cuota: todavía no tiene carnet)
+ *   SOCIO     pfernandez / socio123   (dado de baja, M01: no ingresa a la app) — 3ª entrega
+ *   NO SOCIO  MOLINA, Andrés (DNI 28999111): dos visitas previas (HU09) — 3ª entrega
  */
 object DatosDePrueba {
 
@@ -56,6 +60,19 @@ object DatosDePrueba {
         actividad(db, "Cancha de fútbol", 12000.0, "TURNO")
         actividad(db, "Karate", 6500.0, "TURNO")
         actividad(db, "Tenis", 9000.0, "TURNO", vigente = false)
+
+        // --- 3ª entrega · Módulo 4: socio dado de baja (M01). No ingresa ni figura en vencimientos. ---
+        val fernandez = persona(db, "DNI", "26111333", "FERNANDEZ", "Pablo", "1978-10-05", "11 1212-3434", "pfernandez@mail.com")
+        val nroFernandez = socio(db, fernandez, "pfernandez", "socio123", apto = true, activo = false, inscripcion = hoy.minusMonths(8))
+        db.execSQL("UPDATE socio SET baja = 1 WHERE nro_socio = ?", arrayOf<Any>(nroFernandez))
+
+        // --- 3ª entrega · Módulo 5: visitante recurrente (HU09). Una persona, dos visitas. ---
+        val molina = db.insertOrThrow("persona", null, ContentValues().apply {
+            put("tipo_documento", "DNI"); put("nro_documento", "28999111")
+            put("apellido", "MOLINA"); put("nombre", "Andrés")
+        })
+        visita(db, molina, "Natación - Pileta libre", 8500.0, hoy.minusDays(7).atTime(10, 30))
+        visita(db, molina, "Musculación", 6000.0, hoy.minusDays(2).atTime(18, 15))
     }
 
     // --------------------------------------------------------------------------------------
@@ -143,6 +160,20 @@ object DatosDePrueba {
             put("precio", precio)
             put("unidad_cobro", unidad)
             put("vigente", if (vigente) 1 else 0)
+        })
+    }
+
+    /** Visita de no socio a una actividad de la cartilla, con fecha y hora ISO (yyyy-MM-dd HH:mm:ss). */
+    private fun visita(db: SQLiteDatabase, idPersona: Long, actividad: String, monto: Double, cuando: LocalDateTime) {
+        val cursor = db.rawQuery("SELECT id_actividad FROM actividad WHERE nombre = ?", arrayOf(actividad))
+        cursor.moveToFirst()
+        val idActividad = cursor.getInt(0)
+        cursor.close()
+        db.insertOrThrow("no_socio", null, ContentValues().apply {
+            put("id_persona", idPersona)
+            put("id_actividad", idActividad)
+            put("fecha_hora_visita", cuando.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            put("monto_abonado", monto)
         })
     }
 }
