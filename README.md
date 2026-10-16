@@ -1,15 +1,15 @@
 # Club Deportivo — App Android (3ª entrega DAM · Grupo 5 · Com. 2D)
 
 App nativa Android en **Kotlin + XML** con base de datos local **SQLite** (`SQLiteOpenHelper`).
-Implementa los cinco módulos de la 2ª y 3ª entrega:
+Implementa los tres módulos de la 2ª entrega y los dos módulos nuevos de la 3ª entrega (CRUD completo de socios y visita de no socio):
 
 | Módulo | Qué incluye |
 |---|---|
 | 1 · Ingreso y registro | Pantalla inicial con logo y botón **Ingreso a la App**, login por perfil (Empleado / Socio), Menú Principal, registro de socio con alias único (`SELECT COUNT(*)`) |
 | 2 · Cobro y carnet | Búsqueda por N° de socio o por tipo + N° de documento, monto desde tabla de configuración, vencimiento con `LocalDate.now().plusMonths(1)`, comprobante de pago (Intent + `putExtra`), carnet generado con el primer pago |
 | 3 · Vencimientos | Listado diario (vencen hoy / vencieron ayer) con `RecyclerView` + `LinearLayoutManager`, `data class Socio`, `SocioAdapter` con `ViewHolder`, solapa de vencidas acumuladas |
-| 4 · Editar socio (3ª) | Búsqueda por N° o documento, edición de teléfono y correo con `ContentValues` + `update()` (HU03), baja lógica con confirmación por `AlertDialog` (M01) |
-| 5 · Visita no socio (3ª) | Datos del visitante, actividad desde la cartilla en un `Spinner` con importe pre-cargado, fecha y hora con `LocalDateTime`, control de socio activo, reutilización de persona (HU09) |
+| 4 · Editar socio y baja (3ª) | Búsqueda por N° de socio o por documento, edición de teléfono y correo con `ContentValues` + `update()`, baja lógica (`socio.baja = 1`) confirmada con `AlertDialog`. Solo rol ADMIN |
+| 5 · Visita de no socio (3ª) | Registro de la visita con la actividad de la cartilla en un `Spinner` (tabla `actividad`), importe pre-cargado con su precio, fecha y hora con `LocalDateTime.now()`, aviso si el documento es de un socio activo |
 
 ---
 
@@ -104,17 +104,28 @@ para que el listado diario siempre tenga datos.
 
 | Perfil | Usuario / alias | Contraseña | Situación |
 |---|---|---|---|
-| Empleado (ADMIN) | `admin` | `admin123` | Acceso completo |
-| Empleado (CONSULTA) | `recepcion` | `recep123` | Consulta: no registra, cobra ni edita socios; sí registra visitas de no socio |
-| Socio | `agomez` | `socio123` | Cuota al día, carnet vigente |
+| Empleado (ADMIN) | `admin` | `admin123` | Acceso completo: edita socios y registra visitas |
+| Empleado (CONSULTA) | `recepcion` | `recep123` | Solo consulta: no registra, cobra ni edita socios; sí registra visitas de no socio |
+| Socio | `agomez` | `socio123` | Cuota al día, carnet vigente (DNI 30111222) |
 | Socio | `mruiz`, `lperez` | `socio123` | La cuota vence hoy |
 | Socio | `cdiaz`, `hlopez` | `socio123` | La cuota venció ayer |
 | Socio | `jsosa` | `socio123` | Vencida hace 14 días (acumuladas) |
 | Socio | `rbenitez` | `socio123` | Vencida hace 40 días (acumuladas) |
 | Socio | `nacosta` | `socio123` | Cuota al día pero sin apto físico (pendiente) |
 | Socio | `arubio` | `socio123` | Registrado sin primera cuota: todavía no tiene carnet |
-| Socio dado de baja (3ª) | `pfernandez` | `socio123` | `baja = 1`: no ingresa ni figura en vencimientos |
-| No socio (3ª) | MOLINA, Andrés · DNI 28999111 | — | Visitante recurrente: dos visitas previas |
+| Socio dado de baja (3ª) | `pfernandez` | `socio123` | Baja lógica (DNI 26111333): no puede ingresar ni figura en vencimientos |
+| No socio (3ª) | MOLINA, Andrés | — | DNI 28999111. Dos visitas previas (Natación y Musculación) |
+
+### Cartilla de actividades (3ª)
+
+| Actividad | Precio | Unidad | Vigente |
+|---|---|---|---|
+| Natación - Pileta libre | $ 8.500 | Día | Sí |
+| Musculación | $ 6.000 | Día | Sí |
+| Danza | $ 5.500 | Día | Sí |
+| Cancha de fútbol | $ 12.000 | Turno | Sí |
+| Karate | $ 6.500 | Turno | Sí |
+| Tenis | $ 9.000 | Turno | No (no aparece en el Spinner) |
 
 ## Recorrido sugerido para probar
 
@@ -122,7 +133,9 @@ para que el listado diario siempre tenga datos.
 2. **Registro de socio**: completar el formulario. Probar un alias repetido (ej. `agomez`) → aviso y foco en el campo.
 3. Al guardar, la app pasa sola a **Cobro de cuota** con el socio cargado → confirmar → comprobante → **Ver carnet**.
 4. **Ver vencimientos**: aparecen Díaz, López (vencieron ayer), Pérez y Ruiz (vencen hoy). Tocar uno abre su carnet; **COBRAR** lo lleva al cobro.
-5. **Salir** y entrar como **Socio** con `agomez / socio123` → solo ve su carnet.
+5. **Editar socio** (3ª): buscar N° de socio `1` → cambiar teléfono o correo → **GUARDAR CAMBIOS**. Buscar a `jsosa` (DNI 29555666) → **DAR DE BAJA AL SOCIO** → confirmar en el diálogo: la ficha pasa a DADO DE BAJA y deja de figurar en las vencidas acumuladas.
+6. **Visita no socio** (3ª): elegir una actividad (el importe se completa solo) y registrar. Con el DNI 30111222 (socio activo) la app avisa que corresponde **Cobro de cuota**.
+7. **Salir** y entrar como **Socio** con `agomez / socio123` → solo ve su carnet. Con `pfernandez / socio123` (dado de baja) el ingreso es rechazado.
 
 ## Estructura del proyecto en el Repositorio (GitHub)
 
@@ -152,6 +165,7 @@ AppClubDeportivo/
             │   │   ├── BaseDatosClub.kt  # SQLiteOpenHelper y consultas SQL
             │   │   └── DatosDePrueba.kt  # Carga inicial de datos de prueba
             │   ├── model/          # Clases de modelo y Data Classes
+            │   │   ├── Actividad.kt      # Actividad de la cartilla (Spinner del no socio)
             │   │   ├── Carnet.kt
             │   │   ├── Empleado.kt
             │   │   ├── EstadoSocio.kt
@@ -162,9 +176,11 @@ AppClubDeportivo/
             │   │   ├── CarnetActivity.kt
             │   │   ├── CobroCuotaActivity.kt
             │   │   ├── ComprobanteActivity.kt
+            │   │   ├── EditarSocioActivity.kt      # Edición de contacto y baja lógica (3ª)
             │   │   ├── LoginActivity.kt
             │   │   ├── MainActivity.kt
             │   │   ├── MenuPrincipalActivity.kt
+            │   │   ├── RegistroNoSocioActivity.kt  # Visita de no socio (3ª)
             │   │   ├── RegistroSocioActivity.kt
             │   │   ├── SocioAdapter.kt
             │   │   ├── VencimientosActivity.kt

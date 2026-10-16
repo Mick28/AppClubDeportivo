@@ -4,8 +4,6 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import com.grupo5.clubdeportivo.util.Seguridad
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 /**
  * Carga inicial de la base: usuarios de prueba (al menos un empleado y un socio, como pide
@@ -15,12 +13,12 @@ import java.time.format.DateTimeFormatter
  *
  * Usuarios de prueba:
  *   EMPLEADO  admin      / admin123   (rol ADMIN: acceso completo)
- *   EMPLEADO  recepcion  / recep123   (rol CONSULTA: vencimientos, carnets y visitas de no socio)
+ *   EMPLEADO  recepcion  / recep123   (rol CONSULTA: solo vencimientos y carnets)
  *   SOCIO     agomez     / socio123   (cuota al día, carnet vigente)
- *   SOCIO     jsosa      / socio123   (cuota vencida hace 14 días; candidato a la prueba de baja)
+ *   SOCIO     jsosa      / socio123   (cuota vencida hace 14 días)
  *   SOCIO     arubio     / socio123   (registrado sin primera cuota: todavía no tiene carnet)
- *   SOCIO     pfernandez / socio123   (dado de baja, M01: no ingresa a la app) — 3ª entrega
- *   NO SOCIO  MOLINA, Andrés (DNI 28999111): dos visitas previas (HU09) — 3ª entrega
+ *   SOCIO     pfernandez / socio123   (dado de baja: no puede ingresar; 3ª entrega, M01)
+ *   NO SOCIO  MOLINA, Andrés (DNI 28999111): dos visitas previas (3ª entrega, HU09)
  */
 object DatosDePrueba {
 
@@ -53,26 +51,24 @@ object DatosDePrueba {
         val rubio = persona(db, "DNI", "32777888", "RUBIO", "Ana", "1990-02-27", "11 9999-0000", "arubio@mail.com")
         socio(db, rubio, "arubio", "socio123", apto = false, activo = false, inscripcion = hoy.minusDays(2))
 
+        // Socio dado de baja (3ª entrega, M01): sirve para probar que no puede ingresar,
+        // que no figura en vencimientos y que la ficha muestra DADO DE BAJA.
+        socioConCuota(db, "26111333", "FERNANDEZ", "Pablo", "1978-10-05", "11 1111-2222", "pfernandez", true, hoy.minusDays(60))
+        db.execSQL("UPDATE socio SET baja = 1, estado_activo = 0 WHERE alias = 'pfernandez'")
+
         // --- Cartilla de actividades (mejora M02), los valores del prototipo de Figma ---
-        actividad(db, "Natación - Pileta libre", 8500.0, "DIA")
-        actividad(db, "Musculación", 6000.0, "DIA")
+        val natacion = actividad(db, "Natación - Pileta libre", 8500.0, "DIA")
+        val musculacion = actividad(db, "Musculación", 6000.0, "DIA")
         actividad(db, "Danza", 5500.0, "DIA")
         actividad(db, "Cancha de fútbol", 12000.0, "TURNO")
         actividad(db, "Karate", 6500.0, "TURNO")
         actividad(db, "Tenis", 9000.0, "TURNO", vigente = false)
 
-        // --- 3ª entrega · Módulo 4: socio dado de baja (M01). No ingresa ni figura en vencimientos. ---
-        val fernandez = persona(db, "DNI", "26111333", "FERNANDEZ", "Pablo", "1978-10-05", "11 1212-3434", "pfernandez@mail.com")
-        val nroFernandez = socio(db, fernandez, "pfernandez", "socio123", apto = true, activo = false, inscripcion = hoy.minusMonths(8))
-        db.execSQL("UPDATE socio SET baja = 1 WHERE nro_socio = ?", arrayOf<Any>(nroFernandez))
-
-        // --- 3ª entrega · Módulo 5: visitante recurrente (HU09). Una persona, dos visitas. ---
-        val molina = db.insertOrThrow("persona", null, ContentValues().apply {
-            put("tipo_documento", "DNI"); put("nro_documento", "28999111")
-            put("apellido", "MOLINA"); put("nombre", "Andrés")
-        })
-        visita(db, molina, "Natación - Pileta libre", 8500.0, hoy.minusDays(7).atTime(10, 30))
-        visita(db, molina, "Musculación", 6000.0, hoy.minusDays(2).atTime(18, 15))
+        // --- Visitas previas de no socio (3ª entrega, HU09): un visitante recurrente con dos
+        // pases en días distintos. Permite probar la reutilización de la persona por documento.
+        val molina = persona(db, "DNI", "28999111", "MOLINA", "Andrés", "1992-03-15", "11 2222-3333", "amolina@mail.com")
+        visita(db, molina, natacion, hoy.minusDays(7), "14:20", 8500.0)
+        visita(db, molina, musculacion, hoy.minusDays(2), "09:30", 6000.0)
     }
 
     // --------------------------------------------------------------------------------------
@@ -154,25 +150,21 @@ object DatosDePrueba {
         })
     }
 
-    private fun actividad(db: SQLiteDatabase, nombre: String, precio: Double, unidad: String, vigente: Boolean = true) {
+    /** Inserta una actividad de la cartilla y devuelve su id_actividad. */
+    private fun actividad(db: SQLiteDatabase, nombre: String, precio: Double, unidad: String, vigente: Boolean = true): Long =
         db.insertOrThrow("actividad", null, ContentValues().apply {
             put("nombre", nombre)
             put("precio", precio)
             put("unidad_cobro", unidad)
             put("vigente", if (vigente) 1 else 0)
         })
-    }
 
-    /** Visita de no socio a una actividad de la cartilla, con fecha y hora ISO (yyyy-MM-dd HH:mm:ss). */
-    private fun visita(db: SQLiteDatabase, idPersona: Long, actividad: String, monto: Double, cuando: LocalDateTime) {
-        val cursor = db.rawQuery("SELECT id_actividad FROM actividad WHERE nombre = ?", arrayOf(actividad))
-        cursor.moveToFirst()
-        val idActividad = cursor.getInt(0)
-        cursor.close()
+    /** Registra una visita de no socio (misma estructura que insertarNoSocio en BaseDatosClub). */
+    private fun visita(db: SQLiteDatabase, idPersona: Long, idActividad: Long, fecha: LocalDate, hora: String, monto: Double) {
         db.insertOrThrow("no_socio", null, ContentValues().apply {
             put("id_persona", idPersona)
             put("id_actividad", idActividad)
-            put("fecha_hora_visita", cuando.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            put("fecha_hora_visita", "$fecha $hora:00")
             put("monto_abonado", monto)
         })
     }

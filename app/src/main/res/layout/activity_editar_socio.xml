@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Editar socio (Módulo 4, 3ª entrega): HU03 edición de contacto y M01 baja lógica.
-     Dos secciones que se alternan: búsqueda del socio (mismo patrón que el cobro de cuota)
-     y ficha con los datos editables. Prototipo de referencia: P06 + P07. -->
+<!-- Editar datos de contacto y baja lógica (HU03 y M01).
+     El empleado ADMIN busca al socio y puede modificar teléfono/email
+     o dar de baja con confirmación por AlertDialog. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:paddingEnd="20dp"
             android:paddingBottom="24dp">
 
-            <!-- ============ Búsqueda del socio ============ -->
+            <!-- ============ Sección de búsqueda ============ -->
             <LinearLayout
                 android:id="@+id/llBusqueda"
                 android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                     android:text="@string/btn_buscar" />
             </LinearLayout>
 
-            <!-- ============ Ficha y edición (visible cuando hay un socio) ============ -->
+            <!-- ============ Formulario (visible solo después de encontrar al socio) ============ -->
             <LinearLayout
                 android:id="@+id/llFormulario"
                 android:layout_width="match_parent"
@@ -111,6 +111,7 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
+                <!-- Tarjeta con datos del socio encontrado -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -133,7 +134,7 @@
                             android:textColor="@color/texto"
                             android:textSize="17sp"
                             android:textStyle="bold"
-                            tools:text="GOMEZ, Ana" />
+                            tools:text="GÓMEZ, Andrés" />
 
                         <TextView
                             android:id="@+id/tvSocioDatos"
@@ -151,6 +152,7 @@
                         tools:text="HABILITADO" />
                 </LinearLayout>
 
+                <!-- Datos de contacto editables -->
                 <TextView
                     style="@style/TextoEtiqueta"
                     android:layout_width="match_parent"
@@ -159,37 +161,35 @@
 
                 <TextView
                     style="@style/TextoCampo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
                     android:text="@string/lbl_telefono" />
 
                 <EditText
                     android:id="@+id/etTelefono"
                     style="@style/CampoTexto"
-                    android:hint="Ej: 11 1234 5678"
+                    android:hint="@string/hint_telefono"
+                    android:imeOptions="actionNext"
                     android:inputType="phone"
-                    android:maxLength="20" />
+                    android:maxLength="20"
+                    tools:text="1144445555" />
 
                 <TextView
                     style="@style/TextoCampo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_email" />
 
                 <EditText
                     android:id="@+id/etEmail"
                     style="@style/CampoTexto"
-                    android:hint="nombre@correo.com"
+                    android:hint="@string/hint_email"
+                    android:imeOptions="actionDone"
                     android:inputType="textEmailAddress"
-                    android:maxLength="60" />
+                    android:maxLength="100"
+                    tools:text="agomez@mail.com" />
 
-                <TextView
-                    style="@style/TextoAyuda"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ayuda_editar_identidad" />
-
+                <!-- Botones de acción -->
                 <Button
                     android:id="@+id/btnGuardar"
                     style="@style/BotonPrimario"
@@ -199,15 +199,16 @@
                 <Button
                     android:id="@+id/btnDarDeBaja"
                     style="@style/BotonPeligro"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/btn_dar_de_baja" />
+
+                <Button
+                    android:id="@+id/btnCancelar"
+                    style="@style/BotonSecundario"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/btn_cancelar" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnCancelar"
-                style="@style/BotonSecundario"
-                android:layout_marginTop="12dp"
-                android:text="@string/btn_cancelar" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

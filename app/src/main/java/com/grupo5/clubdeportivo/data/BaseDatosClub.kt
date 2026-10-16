@@ -13,17 +13,17 @@ import com.grupo5.clubdeportivo.model.Socio
 import com.grupo5.clubdeportivo.model.SocioDetalle
 import com.grupo5.clubdeportivo.util.Seguridad
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Clase de la base de datos de la app (SQLiteOpenHelper), como se vio en la Etapa 3
  * (Tema III) y en los códigos de ejemplo del libro de la Etapa 4.
  *
- * Concentra en un solo lugar todas las consultas de los cinco módulos:
+ * Concentra en un solo lugar todas las consultas de los tres módulos:
  *  - Módulo 1: login de empleado y de socio, alias único, alta de socio.
  *  - Módulo 2: búsqueda de socio, registro del cobro, emisión del carnet.
  *  - Módulo 3: listado diario de vencimientos (devuelve List<Socio>).
- *  - Módulo 4: edición de contacto (HU03) y baja lógica del socio (M01).
- *  - Módulo 5: cartilla de actividades y registro de visitas de no socios (HU09, M02).
  *
  * Modelo de datos: se conservan las seis tablas heredadas de DSOO (persona, socio,
  * no_socio, cuota, carnet y usuario, que acá se llama "empleado") y se agregan las
@@ -36,9 +36,7 @@ class BaseDatosClub(context: Context) :
 
     companion object {
         const val NOMBRE_BD = "clubdeportivo.db"
-        // 3: sin cambios de esquema; se sube para recargar los datos de prueba de la 3ª entrega
-        // (socio dado de baja y visitante recurrente) en instalaciones previas.
-        const val VERSION_BD = 3
+        const val VERSION_BD = 2
 
         // Las sentencias CREATE TABLE se agrupan como constantes en el companion object,
         // tal como sugiere el libro de la Etapa 3 para bases con varias tablas relacionadas.
@@ -508,6 +506,152 @@ class BaseDatosClub(context: Context) :
     }
 
     // ------------------------------------------------------------------------------------
+    // MÓDULO 1 · Editar socio y baja lógica (HU03, M01)
+    // ------------------------------------------------------------------------------------
+
+    /**
+     * Modifica el teléfono y el correo del socio (HU03: modificar datos de contacto).
+     * Solo se actualiza la tabla persona, dado que esos datos viven ahí.
+     *
+     * @return true si se actualizó exactamente una fila.
+     */
+    fun actualizarContactoSocio(nroSocio: Int, telefono: String, email: String): Boolean {
+        val bd = writableDatabase
+        bd.beginTransaction()
+        try {
+            val valores = ContentValues().apply {
+                put("telefono", telefono)
+                put("email", email)
+            }
+            // El id_persona del socio se obtiene con una subconsulta (misma técnica que el libro).
+            val filas = bd.update(
+                "persona",
+                valores,
+                "id_persona = (SELECT id_persona FROM socio WHERE nro_socio = ?)",
+                arrayOf(nroSocio.toString())
+            )
+            bd.setTransactionSuccessful()
+            return filas == 1
+        } catch (e: Exception) {
+            return false
+        } finally {
+            bd.endTransaction()
+        }
+    }
+
+    /**
+     * Baja lógica del socio (M01): pone baja = 1 y estado_activo = 0 en la tabla socio.
+     * El socio queda registrado en la base (para auditoría y para no perder su historial),
+     * pero no puede iniciar sesión ni aparece en los listados de vencimientos.
+     *
+     * @return true si se actualizó exactamente una fila (el socio existía y no tenía baja ya).
+     */
+    fun darDeBajaSocio(nroSocio: Int): Boolean {
+        val bd = writableDatabase
+        val valores = ContentValues().apply {
+            put("baja", 1)
+            put("estado_activo", 0)
+        }
+        return bd.update(
+            "socio",
+            valores,
+            "nro_socio = ? AND baja = 0",
+            arrayOf(nroSocio.toString())
+        ) == 1
+    }
+
+    // ------------------------------------------------------------------------------------
+    // MÓDULO 3 · Registro de no socio (HU09)
+    // ------------------------------------------------------------------------------------
+
+    /**
+     * Lista las actividades vigentes del club para mostrarlas en el Spinner de la pantalla
+     * de registro de no socio. Se excluyen las actividades dadas de baja (vigente = 0).
+     */
+    fun listarActividades(): List<Actividad> {
+        val lista = mutableListOf<Actividad>()
+        val bd = readableDatabase
+        val cursor = bd.rawQuery(
+            "SELECT id_actividad, nombre, precio, unidad_cobro FROM actividad WHERE vigente = 1 ORDER BY nombre",
+            null
+        )
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(
+                    Actividad(
+                        id = cursor.getInt(0),
+                        nombre = cursor.getString(1),
+                        precio = cursor.getDouble(2),
+                        unidadCobro = cursor.getString(3)
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return lista
+    }
+
+    /**
+     * Registra la visita de una persona no socia (HU09).
+     * Si la persona ya existe (vino antes o es un ex socio), se reutiliza su fila en persona.
+     * Si es nueva, se la inserta primero.
+     * En ambos casos se inserta una fila en no_socio con los datos de la visita.
+     *
+     * @return el id de la visita (nro_visita) generado, o -1 si falló.
+     */
+    fun insertarNoSocio(
+        tipoDocumento: String,
+        nroDocumento: String,
+        apellido: String,
+        nombre: String,
+        idActividad: Int,
+        montoAbonado: Double,
+        fechaHoraVisita: String
+    ): Long {
+        val bd = writableDatabase
+        bd.beginTransaction()
+        try {
+            // Reutilizar la persona si ya existe; si no, crearla.
+            var idPersona = idPersonaPorDocumento(bd, tipoDocumento, nroDocumento)
+            if (idPersona <= 0) {
+                val datosPersona = ContentValues().apply {
+                    put("tipo_documento", tipoDocumento)
+                    put("nro_documento", nroDocumento)
+                    put("apellido", apellido)
+                    put("nombre", nombre)
+                }
+                idPersona = bd.insertOrThrow("persona", null, datosPersona)
+            }
+            val datosVisita = ContentValues().apply {
+                put("id_persona", idPersona)
+                put("id_actividad", idActividad)
+                put("fecha_hora_visita", fechaHoraVisita)
+                put("monto_abonado", montoAbonado)
+            }
+            val id = bd.insertOrThrow("no_socio", null, datosVisita)
+            bd.setTransactionSuccessful()
+            return id
+        } catch (e: Exception) {
+            return -1
+        } finally {
+            bd.endTransaction()
+        }
+    }
+
+    /**
+     * Verifica si el documento ya está asociado a un socio activo (baja = 0).
+     * Se usa en el registro de no socio para advertir al empleado si el visitante
+     * ya figura como socio y debería cobrar la cuota por el flujo habitual.
+     */
+    fun esSocioActivo(tipoDocumento: String, nroDocumento: String): Boolean =
+        contar(
+            """SELECT COUNT(*) FROM socio s
+               INNER JOIN persona p ON p.id_persona = s.id_persona
+               WHERE p.tipo_documento = ? AND p.nro_documento = ? AND s.baja = 0""",
+            arrayOf(tipoDocumento, nroDocumento)
+        ) > 0
+
+    // ------------------------------------------------------------------------------------
     // Control automático de vencimientos (HU08, mejora M09)
     // ------------------------------------------------------------------------------------
 
@@ -617,149 +761,6 @@ class BaseDatosClub(context: Context) :
                    GROUP BY c.nro_socio HAVING MAX(c.fecha_vencimiento) = ?)""",
             arrayOf(hoy.toString())
         )
-
-    // ------------------------------------------------------------------------------------
-    // MÓDULO 4 · Edición de contacto y baja lógica del socio (HU03, M01)
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Actualiza el teléfono y el correo del socio (HU03, CRUD Update de las semanas 10 a 13).
-     * Los datos de contacto viven en la tabla persona: la fila se ubica con una subconsulta
-     * por número de socio. Se usa ContentValues + update() con WHERE parametrizado, como el libro.
-     *
-     * @return true si se actualizó exactamente una fila.
-     */
-    fun actualizarContactoSocio(nroSocio: Int, telefono: String, email: String): Boolean {
-        val bd = writableDatabase
-        bd.beginTransaction()
-        try {
-            val valores = ContentValues().apply {
-                put("telefono", telefono)
-                put("email", email)
-            }
-            // El id_persona del socio se obtiene con una subconsulta.
-            val filas = bd.update(
-                "persona", valores,
-                "id_persona = (SELECT id_persona FROM socio WHERE nro_socio = ?)",
-                arrayOf(nroSocio.toString())
-            )
-            bd.setTransactionSuccessful()
-            return filas == 1
-        } catch (e: Exception) {
-            return false
-        } finally {
-            bd.endTransaction()
-        }
-    }
-
-    /**
-     * Baja lógica del socio (M01): pone baja = 1 y estado_activo = 0. No borra ninguna fila,
-     * así persona, cuotas y carnet se conservan como historial. La condición "AND baja = 0"
-     * hace que devuelva true solo si el socio realmente cambió de estado.
-     *
-     * Efectos sin código adicional: validarSocio(), los listados de vencimientos y
-     * contarVencenHoy() ya filtran por baja = 0.
-     */
-    fun darDeBajaSocio(nroSocio: Int): Boolean {
-        val bd = writableDatabase
-        val valores = ContentValues().apply {
-            put("baja", 1)
-            put("estado_activo", 0)
-        }
-        return bd.update("socio", valores, "nro_socio = ? AND baja = 0", arrayOf(nroSocio.toString())) == 1
-    }
-
-    // ------------------------------------------------------------------------------------
-    // MÓDULO 5 · Visita de no socio (HU09, M02)
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Cartilla de actividades vigentes ordenada por nombre (Readable Database, semana 11).
-     * Alimenta el Spinner de RegistroNoSocioActivity; las actividades con vigente = 0 no se listan.
-     */
-    fun listarActividades(): List<Actividad> {
-        val lista = mutableListOf<Actividad>()
-        val bd = readableDatabase
-        val cursor = bd.rawQuery(
-            "SELECT id_actividad, nombre, precio, unidad_cobro FROM actividad WHERE vigente = 1 ORDER BY nombre",
-            null
-        )
-        if (cursor.moveToFirst()) {
-            do {
-                lista.add(
-                    Actividad(
-                        id = cursor.getInt(0),
-                        nombre = cursor.getString(1),
-                        precio = cursor.getDouble(2),
-                        unidadCobro = cursor.getString(3)
-                    )
-                )
-            } while (cursor.moveToNext())
-        }
-        cursor.close()
-        return lista
-    }
-
-    /**
-     * Indica si el documento pertenece a un socio activo (baja = 0), con SELECT COUNT(*)
-     * (Tema I, 4.1). Se usa antes de registrar una visita: a un socio activo no se le cobra
-     * el pase diario sino la cuota. Un socio dado de baja sí puede venir como visitante.
-     */
-    fun esSocioActivo(tipoDocumento: String, nroDocumento: String): Boolean =
-        contar(
-            """SELECT COUNT(*) FROM socio s INNER JOIN persona p ON p.id_persona = s.id_persona
-               WHERE p.tipo_documento = ? AND p.nro_documento = ? AND s.baja = 0""",
-            arrayOf(tipoDocumento, nroDocumento)
-        ) > 0
-
-    /**
-     * Registra la visita de un no socio (HU09) en una transacción:
-     *  1. Reutiliza la persona si el documento ya existe (visitante recurrente o ex socio);
-     *     si no existe, la crea con apellido y nombre.
-     *  2. Inserta la fila en no_socio con la actividad, la fecha y hora y el importe.
-     * Así un visitante recurrente tiene una sola fila en persona y una en no_socio por visita.
-     *
-     * @param fechaHoraVisita LocalDateTime.now() formateado como yyyy-MM-dd HH:mm:ss.
-     * @return el id_no_socio generado, o -1 si la operación falló.
-     */
-    fun insertarNoSocio(
-        tipoDocumento: String,
-        nroDocumento: String,
-        apellido: String,
-        nombre: String,
-        idActividad: Int,
-        montoAbonado: Double,
-        fechaHoraVisita: String
-    ): Long {
-        val bd = writableDatabase
-        bd.beginTransaction()
-        try {
-            // Reutilizar la persona si ya existe; si no, crearla.
-            var idPersona = idPersonaPorDocumento(bd, tipoDocumento, nroDocumento)
-            if (idPersona <= 0) {
-                val datosPersona = ContentValues().apply {
-                    put("tipo_documento", tipoDocumento)
-                    put("nro_documento", nroDocumento)
-                    put("apellido", apellido)
-                    put("nombre", nombre)
-                }
-                idPersona = bd.insertOrThrow("persona", null, datosPersona)
-            }
-            val datosVisita = ContentValues().apply {
-                put("id_persona", idPersona)
-                put("id_actividad", idActividad)
-                put("fecha_hora_visita", fechaHoraVisita)
-                put("monto_abonado", montoAbonado)
-            }
-            val id = bd.insertOrThrow("no_socio", null, datosVisita)
-            bd.setTransactionSuccessful()
-            return id
-        } catch (e: Exception) {
-            return -1
-        } finally {
-            bd.endTransaction()
-        }
-    }
 
     // ------------------------------------------------------------------------------------
     // Funciones auxiliares

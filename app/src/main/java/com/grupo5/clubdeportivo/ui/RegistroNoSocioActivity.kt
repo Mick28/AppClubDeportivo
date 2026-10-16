@@ -1,6 +1,7 @@
 package com.grupo5.clubdeportivo.ui
 
 import android.os.Bundle
+import android.util.Patterns
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -15,25 +16,21 @@ import com.grupo5.clubdeportivo.R
 import com.grupo5.clubdeportivo.data.BaseDatosClub
 import com.grupo5.clubdeportivo.model.Actividad
 import com.grupo5.clubdeportivo.util.Formato
-import com.grupo5.clubdeportivo.util.Sesion
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * Registro de visita de no socio (Módulo 5, 3ª entrega). Implementa HU09.
+ * Registro de visita de no socio (HU09).
  *
- * El empleado carga los datos del visitante (tipo y número de documento, apellido y nombre),
- * elige la actividad de la cartilla (tabla actividad, mejora M02) y cobra el pase. El importe
- * se pre-carga con el precio de la actividad y la fecha y hora las toma la app con java.time.
- *
- * Accesible para ADMIN y CONSULTA (M06): es un cobro de mostrador, como el de la recepción.
- *
- * Control de socio activo: si el documento pertenece a un socio con baja = 0, se avisa que
- * debe usarse "Cobro de cuota" y no se registra nada.
+ * El empleado ADMIN o CONSULTA puede registrar la visita de una persona que NO es socio.
+ * Se selecciona la actividad del catálogo y el importe se pre-completa automáticamente
+ * (aunque el empleado puede ajustarlo si hay descuentos). Si el documento ingresado
+ * pertenece a un socio activo, se muestra un aviso para cobrar la cuota en cambio.
  */
 class RegistroNoSocioActivity : AppCompatActivity() {
 
     private lateinit var bd: BaseDatosClub
+
     private lateinit var spTipoDoc: Spinner
     private lateinit var etNroDoc: EditText
     private lateinit var etApellido: EditText
@@ -42,30 +39,18 @@ class RegistroNoSocioActivity : AppCompatActivity() {
     private lateinit var etMonto: EditText
     private lateinit var tvAyudaMonto: TextView
 
-    /** Cartilla de actividades vigentes, en el mismo orden que el Spinner. */
     private var actividades: List<Actividad> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro_no_socio)
 
-        if (Sesion.empleado == null) {
-            Toast.makeText(this, "Sesión no válida: volvé a iniciar sesión", Toast.LENGTH_LONG).show()
-            finish()
-            return
-        }
         bd = BaseDatosClub(this)
-        configurarBarra(getString(R.string.no_socio_titulo))
-        vincularVistas()
+        configurarBarra(getString(R.string.nosocio_titulo))
 
-        // Cartilla de actividades (Readable Database, semana 11). Sin actividades no hay visita posible.
-        actividades = bd.listarActividades()
-        if (actividades.isEmpty()) {
-            Toast.makeText(this, "No hay actividades vigentes en la cartilla", Toast.LENGTH_LONG).show()
-            finish()
-            return
-        }
+        vincularVistas()
         cargarActividades()
+        configurarBotones()
     }
 
     private fun vincularVistas() {
@@ -77,105 +62,125 @@ class RegistroNoSocioActivity : AppCompatActivity() {
         etMonto = findViewById(R.id.etMonto)
         tvAyudaMonto = findViewById(R.id.tvAyudaMonto)
 
-        val adaptadorDoc = ArrayAdapter.createFromResource(this, R.array.tipos_documento, R.layout.item_spinner)
-        adaptadorDoc.setDropDownViewResource(R.layout.item_spinner)
-        spTipoDoc.adapter = adaptadorDoc
-
-        findViewById<Button>(R.id.btnRegistrarVisita).setOnClickListener { validarYRegistrar() }
-        findViewById<Button>(R.id.btnCancelar).setOnClickListener { finish() }
+        // Spinner de tipo de documento
+        val adaptadorTipo = ArrayAdapter.createFromResource(
+            this, R.array.tipos_documento, R.layout.item_spinner
+        )
+        adaptadorTipo.setDropDownViewResource(R.layout.item_spinner)
+        spTipoDoc.adapter = adaptadorTipo
     }
 
-    /**
-     * Carga el Spinner con la cartilla (Actividad.toString() devuelve el nombre) y, al elegir
-     * una actividad, pre-carga el importe con su precio y muestra la unidad de cobro.
-     */
+    /** Carga la cartilla de actividades vigentes desde la BD y configura el Spinner. */
     private fun cargarActividades() {
-        val adaptador = ArrayAdapter(this, R.layout.item_spinner, actividades)
-        adaptador.setDropDownViewResource(R.layout.item_spinner)
-        spActividad.adapter = adaptador
+        actividades = bd.listarActividades()
+        if (actividades.isEmpty()) {
+            Toast.makeText(this, "No hay actividades configuradas en el sistema", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
 
+        val adaptadorAct = ArrayAdapter(this, R.layout.item_spinner, actividades)
+        adaptadorAct.setDropDownViewResource(R.layout.item_spinner)
+        spActividad.adapter = adaptadorAct
+
+        // Al seleccionar una actividad, pre-completar el importe y la descripción de cobro.
         spActividad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 val act = actividades[pos]
-                // Sin decimales si son cero ("12000", no "12000.0"), igual que el monto de la cuota.
                 etMonto.setText(if (act.precio % 1.0 == 0.0) act.precio.toLong().toString() else act.precio.toString())
                 val unidad = if (act.unidadCobro == "TURNO") "por turno" else "por día"
                 tvAyudaMonto.text = "Precio de cartilla: ${Formato.moneda(act.precio)} $unidad"
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
+    private fun configurarBotones() {
+        findViewById<Button>(R.id.btnRegistrarVisita).setOnClickListener { registrarVisita() }
+        findViewById<Button>(R.id.btnCancelar).setOnClickListener { finish() }
+    }
+
     // ------------------------------------------------------------------------------------
-    // Validaciones y registro (HU09, M08, M10)
+    // HU09: Registrar visita
     // ------------------------------------------------------------------------------------
 
-    /** Valida en orden: documento, apellido y nombre, importe > 0; luego el control de socio activo. */
-    private fun validarYRegistrar() {
+    private fun registrarVisita() {
+        ocultarTeclado()
+
         val tipoDoc = spTipoDoc.selectedItem.toString()
         val nroDoc = etNroDoc.text.toString().trim()
         val apellido = etApellido.text.toString().trim()
         val nombre = etNombre.text.toString().trim()
+        val monto = etMonto.text.toString().trim().toDoubleOrNull()
 
-        if (nroDoc.isEmpty()) { marcarError(etNroDoc, "Ingresá el número de documento"); return }
-        // Mismas reglas de formato que el alta de socio (M10).
-        if (tipoDoc == "DNI" && !nroDoc.matches(Regex("\\d{7,8}"))) {
-            marcarError(etNroDoc, "El DNI debe tener 7 u 8 números"); return
+        // ---- Validaciones ----
+        if (nroDoc.isEmpty()) {
+            etNroDoc.error = "Ingresá el número de documento"
+            etNroDoc.requestFocus()
+            return
         }
-        if (!nroDoc.matches(Regex("\\d{6,9}"))) { marcarError(etNroDoc, "Documento inválido"); return }
-        if (apellido.isEmpty()) { marcarError(etApellido, "Dato obligatorio"); return }
-        if (nombre.isEmpty()) { marcarError(etNombre, "Dato obligatorio"); return }
+        if (apellido.isEmpty()) {
+            etApellido.error = "El apellido es obligatorio"
+            etApellido.requestFocus()
+            return
+        }
+        if (nombre.isEmpty()) {
+            etNombre.error = "El nombre es obligatorio"
+            etNombre.requestFocus()
+            return
+        }
+        if (monto == null || monto <= 0) {
+            etMonto.error = "Ingresá un importe válido"
+            etMonto.requestFocus()
+            return
+        }
 
-        val monto = etMonto.text.toString().replace(",", ".").toDoubleOrNull()
-        if (monto == null || monto <= 0) { marcarError(etMonto, "Ingresá un importe mayor a cero"); return }
-
-        ocultarTeclado()
-
-        // A un socio activo no se le cobra el pase: tiene que pagar la cuota.
+        // ---- Verificar que no sea socio activo ----
         if (bd.esSocioActivo(tipoDoc, nroDoc)) {
             AlertDialog.Builder(this)
                 .setTitle("Es un socio activo")
                 .setMessage(
-                    "El documento $tipoDoc $nroDoc pertenece a un socio del club. " +
-                        "No corresponde cobrarle un pase diario: usá \"Cobro de cuota\" desde el menú."
+                    "El documento ingresado corresponde a un socio activo del club.\n\n" +
+                    "Para cobrarle una visita, usá la opción «Cobro de cuota» del menú principal."
                 )
                 .setPositiveButton("ENTENDIDO", null)
                 .show()
             return
         }
 
+        // ---- Insertar registro ----
         val actividad = actividades[spActividad.selectedItemPosition]
-        // Fecha y hora de la visita con java.time (Tema I, 4.3).
-        val fechaHora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val fechaHora = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
         val id = bd.insertarNoSocio(
-            tipoDoc, nroDoc, apellido.uppercase(), nombre, actividad.id, monto, fechaHora
+            tipoDocumento = tipoDoc,
+            nroDocumento = nroDoc,
+            apellido = apellido.uppercase(),
+            nombre = nombre,
+            idActividad = actividad.id,
+            montoAbonado = monto,
+            fechaHoraVisita = fechaHora
         )
 
         if (id > 0) {
             AlertDialog.Builder(this)
                 .setTitle("Visita registrada")
                 .setMessage(
-                    "Visitante: ${apellido.uppercase()}, $nombre ($tipoDoc $nroDoc)\n" +
-                        "Actividad: ${actividad.nombre}\n" +
-                        "Importe: ${Formato.moneda(monto)}"
+                    "Se registró la visita de $apellido, $nombre.\n\n" +
+                    "Actividad: ${actividad.nombre}\n" +
+                    "Importe abonado: ${Formato.moneda(monto)}"
                 )
+                .setPositiveButton("VOLVER AL MENÚ") { _, _ -> finish() }
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.btn_volver_menu)) { _, _ -> finish() }
                 .show()
         } else {
-            // M08: errores visibles.
             AlertDialog.Builder(this)
-                .setTitle("No se pudo registrar la visita")
-                .setMessage("Ocurrió un error al guardar la visita. No se cobró nada: intentá de nuevo.")
+                .setTitle("No se pudo registrar")
+                .setMessage("Ocurrió un error al registrar la visita. Intentá de nuevo.")
                 .setPositiveButton("ENTENDIDO", null)
                 .show()
         }
-    }
-
-    private fun marcarError(campo: EditText, mensaje: String) {
-        campo.error = mensaje
-        campo.requestFocus()
     }
 
     override fun onDestroy() {

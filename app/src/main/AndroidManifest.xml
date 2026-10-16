@@ -53,8 +53,6 @@
             android:name=".ui.VencimientosActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
-        <!-- 3ª entrega: Módulo 4 (HU03, M01) y Módulo 5 (HU09) -->
         <activity
             android:name=".ui.EditarSocioActivity"
             android:exported="false"
