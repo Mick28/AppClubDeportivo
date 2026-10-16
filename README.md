@@ -1,13 +1,15 @@
-# Club Deportivo — App Android (2ª entrega DAM · Grupo 5 · Com. 2D)
+# Club Deportivo — App Android (3ª entrega DAM · Grupo 5 · Com. 2D)
 
 App nativa Android en **Kotlin + XML** con base de datos local **SQLite** (`SQLiteOpenHelper`).
-Implementa los tres módulos de la 2ª entrega:
+Implementa los cinco módulos de la 2ª y 3ª entrega:
 
 | Módulo | Qué incluye |
 |---|---|
 | 1 · Ingreso y registro | Pantalla inicial con logo y botón **Ingreso a la App**, login por perfil (Empleado / Socio), Menú Principal, registro de socio con alias único (`SELECT COUNT(*)`) |
 | 2 · Cobro y carnet | Búsqueda por N° de socio o por tipo + N° de documento, monto desde tabla de configuración, vencimiento con `LocalDate.now().plusMonths(1)`, comprobante de pago (Intent + `putExtra`), carnet generado con el primer pago |
 | 3 · Vencimientos | Listado diario (vencen hoy / vencieron ayer) con `RecyclerView` + `LinearLayoutManager`, `data class Socio`, `SocioAdapter` con `ViewHolder`, solapa de vencidas acumuladas |
+| 4 · Editar socio (3ª) | Búsqueda por N° o documento, edición de teléfono y correo con `ContentValues` + `update()` (HU03), baja lógica con confirmación por `AlertDialog` (M01) |
+| 5 · Visita no socio (3ª) | Datos del visitante, actividad desde la cartilla en un `Spinner` con importe pre-cargado, fecha y hora con `LocalDateTime`, control de socio activo, reutilización de persona (HU09) |
 
 ---
 
@@ -103,7 +105,7 @@ para que el listado diario siempre tenga datos.
 | Perfil | Usuario / alias | Contraseña | Situación |
 |---|---|---|---|
 | Empleado (ADMIN) | `admin` | `admin123` | Acceso completo |
-| Empleado (CONSULTA) | `recepcion` | `recep123` | Solo consulta: no registra ni cobra |
+| Empleado (CONSULTA) | `recepcion` | `recep123` | Consulta: no registra, cobra ni edita socios; sí registra visitas de no socio |
 | Socio | `agomez` | `socio123` | Cuota al día, carnet vigente |
 | Socio | `mruiz`, `lperez` | `socio123` | La cuota vence hoy |
 | Socio | `cdiaz`, `hlopez` | `socio123` | La cuota venció ayer |
@@ -111,6 +113,8 @@ para que el listado diario siempre tenga datos.
 | Socio | `rbenitez` | `socio123` | Vencida hace 40 días (acumuladas) |
 | Socio | `nacosta` | `socio123` | Cuota al día pero sin apto físico (pendiente) |
 | Socio | `arubio` | `socio123` | Registrado sin primera cuota: todavía no tiene carnet |
+| Socio dado de baja (3ª) | `pfernandez` | `socio123` | `baja = 1`: no ingresa ni figura en vencimientos |
+| No socio (3ª) | MOLINA, Andrés · DNI 28999111 | — | Visitante recurrente: dos visitas previas |
 
 ## Recorrido sugerido para probar
 
