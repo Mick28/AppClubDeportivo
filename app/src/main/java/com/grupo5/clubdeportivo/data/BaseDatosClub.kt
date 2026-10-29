@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.grupo5.clubdeportivo.model.Actividad
 import com.grupo5.clubdeportivo.model.Carnet
 import com.grupo5.clubdeportivo.model.Empleado
+import com.grupo5.clubdeportivo.model.PersonaExistente
 import com.grupo5.clubdeportivo.model.ResultadoPago
 import com.grupo5.clubdeportivo.model.Socio
 import com.grupo5.clubdeportivo.model.SocioDetalle
@@ -350,6 +351,35 @@ class BaseDatosClub(context: Context) :
             "$CONSULTA_SOCIO WHERE p.tipo_documento = ? AND p.nro_documento = ?",
             arrayOf(tipoDocumento, nroDocumento)
         )
+
+    /**
+     * Busca los datos de una persona registrada previamente (como socio o no socio)
+     * por su tipo y número de documento, para autocompletar sus datos en los formularios.
+     */
+    fun buscarPersonaPorDocumento(tipoDocumento: String, nroDocumento: String): PersonaExistente? {
+        val bd = readableDatabase
+        val cursor = bd.rawQuery(
+            """SELECT id_persona, apellido, nombre,
+                      IFNULL(fecha_nacimiento, ''), IFNULL(telefono, ''), IFNULL(email, '')
+               FROM persona WHERE tipo_documento = ? AND nro_documento = ?""",
+            arrayOf(tipoDocumento, nroDocumento)
+        )
+        var persona: PersonaExistente? = null
+        if (cursor.moveToFirst()) {
+            persona = PersonaExistente(
+                idPersona = cursor.getLong(0),
+                tipoDocumento = tipoDocumento,
+                nroDocumento = nroDocumento,
+                apellido = cursor.getString(1),
+                nombre = cursor.getString(2),
+                fechaNacimiento = cursor.getString(3).ifEmpty { null },
+                telefono = cursor.getString(4).ifEmpty { null },
+                email = cursor.getString(5).ifEmpty { null }
+            )
+        }
+        cursor.close()
+        return persona
+    }
 
     private fun buscarSocio(query: String, args: Array<String>): SocioDetalle? {
         val bd = readableDatabase

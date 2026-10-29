@@ -51,6 +51,7 @@ class RegistroNoSocioActivity : AppCompatActivity() {
         vincularVistas()
         cargarActividades()
         configurarBotones()
+        configurarBusquedaPersona()
     }
 
     private fun vincularVistas() {
@@ -98,6 +99,44 @@ class RegistroNoSocioActivity : AppCompatActivity() {
     private fun configurarBotones() {
         findViewById<Button>(R.id.btnRegistrarVisita).setOnClickListener { registrarVisita() }
         findViewById<Button>(R.id.btnCancelar).setOnClickListener { finish() }
+    }
+
+    /**
+     * Autocompleta automáticamente el apellido y nombre si la persona
+     * ya estuvo registrada previamente en la base de datos (como socio o no socio).
+     */
+    private fun configurarBusquedaPersona() {
+        etNroDoc.setOnFocusChangeListener { _, tieneFoco ->
+            if (!tieneFoco) buscarYCompletarPersona()
+        }
+
+        etNroDoc.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val texto = s?.toString()?.trim() ?: ""
+                if (texto.length in 7..10) {
+                    buscarYCompletarPersona()
+                }
+            }
+        })
+    }
+
+    private fun buscarYCompletarPersona() {
+        val tipoDoc = spTipoDoc.selectedItem?.toString() ?: return
+        val nroDoc = etNroDoc.text.toString().trim()
+        if (nroDoc.length < 6) return
+
+        val persona = bd.buscarPersonaPorDocumento(tipoDoc, nroDoc)
+        if (persona != null) {
+            etApellido.setText(persona.apellido)
+            etNombre.setText(persona.nombre)
+            Toast.makeText(
+                this,
+                "Persona registrada encontrada: ${persona.apellido}, ${persona.nombre}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     // ------------------------------------------------------------------------------------

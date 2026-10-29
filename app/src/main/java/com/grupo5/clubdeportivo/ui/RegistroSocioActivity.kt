@@ -83,6 +83,7 @@ class RegistroSocioActivity : AppCompatActivity() {
         etFechaNac.setOnClickListener { elegirFechaNacimiento() }
         findViewById<Button>(R.id.btnGuardar).setOnClickListener { guardarSocio() }
         findViewById<Button>(R.id.btnCancelar).setOnClickListener { finish() }
+        configurarBusquedaPersona()
     }
 
     /** Abre un calendario para elegir la fecha de nacimiento (no se permiten fechas futuras). */
@@ -102,6 +103,53 @@ class RegistroSocioActivity : AppCompatActivity() {
         dialogo.datePicker.maxDate =
             LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         dialogo.show()
+    }
+
+    /**
+     * Autocompleta automáticamente los datos personales si el documento pertenece a alguien
+     * que ya estuvo registrado previamente en la base de datos (por ejemplo, como no socio/visitante).
+     */
+    private fun configurarBusquedaPersona() {
+        etNroDoc.setOnFocusChangeListener { _, tieneFoco ->
+            if (!tieneFoco) buscarYCompletarPersona()
+        }
+
+        etNroDoc.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val texto = s?.toString()?.trim() ?: ""
+                if (texto.length in 7..10) {
+                    buscarYCompletarPersona()
+                }
+            }
+        })
+    }
+
+    private fun buscarYCompletarPersona() {
+        val tipoDoc = spTipoDoc.selectedItem?.toString() ?: return
+        val nroDoc = etNroDoc.text.toString().trim()
+        if (nroDoc.length < 6) return
+
+        val persona = bd.buscarPersonaPorDocumento(tipoDoc, nroDoc)
+        if (persona != null) {
+            etApellido.setText(persona.apellido)
+            etNombre.setText(persona.nombre)
+            persona.telefono?.let { if (it.isNotEmpty()) etTelefono.setText(it) }
+            persona.email?.let { if (it.isNotEmpty()) etEmail.setText(it) }
+            persona.fechaNacimiento?.let { fStr ->
+                try {
+                    val fecha = LocalDate.parse(fStr)
+                    fechaNacimiento = fecha
+                    etFechaNac.setText(Formato.fecha(fecha))
+                } catch (_: Exception) {}
+            }
+            Toast.makeText(
+                this,
+                "Persona registrada encontrada: ${persona.apellido}, ${persona.nombre}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun guardarSocio() {
