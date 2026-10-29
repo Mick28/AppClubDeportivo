@@ -4,11 +4,13 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +40,7 @@ class RegistroSocioActivity : AppCompatActivity() {
     private lateinit var bd: BaseDatosClub
     private lateinit var spTipoDoc: Spinner
     private lateinit var etNroDoc: EditText
+    private lateinit var tvInfoDoc: TextView
     private lateinit var etApellido: EditText
     private lateinit var etNombre: EditText
     private lateinit var etFechaNac: EditText
@@ -66,6 +69,7 @@ class RegistroSocioActivity : AppCompatActivity() {
 
         spTipoDoc = findViewById(R.id.spTipoDoc)
         etNroDoc = findViewById(R.id.etNroDoc)
+        tvInfoDoc = findViewById(R.id.tvInfoDoc)
         etApellido = findViewById(R.id.etApellido)
         etNombre = findViewById(R.id.etNombre)
         etFechaNac = findViewById(R.id.etFechaNac)
@@ -105,9 +109,12 @@ class RegistroSocioActivity : AppCompatActivity() {
         dialogo.show()
     }
 
+    private var personaAutocompletada = false
+
     /**
      * Autocompleta automáticamente los datos personales si el documento pertenece a alguien
      * que ya estuvo registrado previamente en la base de datos (por ejemplo, como no socio/visitante).
+     * Si el documento no posee registro previo, limpia los campos correspondientes.
      */
     private fun configurarBusquedaPersona() {
         etNroDoc.setOnFocusChangeListener { _, tieneFoco ->
@@ -121,6 +128,8 @@ class RegistroSocioActivity : AppCompatActivity() {
                 val texto = s?.toString()?.trim() ?: ""
                 if (texto.length in 7..10) {
                     buscarYCompletarPersona()
+                } else if (texto.isEmpty() && personaAutocompletada) {
+                    limpiarCamposPersona()
                 }
             }
         })
@@ -129,7 +138,11 @@ class RegistroSocioActivity : AppCompatActivity() {
     private fun buscarYCompletarPersona() {
         val tipoDoc = spTipoDoc.selectedItem?.toString() ?: return
         val nroDoc = etNroDoc.text.toString().trim()
-        if (nroDoc.length < 6) return
+        if (nroDoc.length < 6) {
+            tvInfoDoc.visibility = View.GONE
+            if (personaAutocompletada) limpiarCamposPersona()
+            return
+        }
 
         val persona = bd.buscarPersonaPorDocumento(tipoDoc, nroDoc)
         if (persona != null) {
@@ -144,12 +157,26 @@ class RegistroSocioActivity : AppCompatActivity() {
                     etFechaNac.setText(Formato.fecha(fecha))
                 } catch (_: Exception) {}
             }
-            Toast.makeText(
-                this,
-                "Persona registrada encontrada: ${persona.apellido}, ${persona.nombre}",
-                Toast.LENGTH_SHORT
-            ).show()
+            personaAutocompletada = true
+            tvInfoDoc.visibility = View.VISIBLE
+            tvInfoDoc.setTextColor(getColor(R.color.estado_habilitado))
+            tvInfoDoc.text = "✓ Registrado/a en la base: ${persona.apellido}, ${persona.nombre}"
+        } else {
+            if (personaAutocompletada) limpiarCamposPersona()
+            tvInfoDoc.visibility = View.VISIBLE
+            tvInfoDoc.setTextColor(getColor(R.color.texto_secundario))
+            tvInfoDoc.text = "ℹ Documento nuevo (sin registro previo)"
         }
+    }
+
+    private fun limpiarCamposPersona() {
+        etApellido.text.clear()
+        etNombre.text.clear()
+        etTelefono.text.clear()
+        etEmail.text.clear()
+        etFechaNac.text.clear()
+        fechaNacimiento = null
+        personaAutocompletada = false
     }
 
     private fun guardarSocio() {

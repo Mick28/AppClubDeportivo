@@ -54,9 +54,12 @@ class RegistroNoSocioActivity : AppCompatActivity() {
         configurarBusquedaPersona()
     }
 
+    private lateinit var tvInfoDoc: TextView
+
     private fun vincularVistas() {
         spTipoDoc = findViewById(R.id.spTipoDoc)
         etNroDoc = findViewById(R.id.etNroDoc)
+        tvInfoDoc = findViewById(R.id.tvInfoDoc)
         etApellido = findViewById(R.id.etApellido)
         etNombre = findViewById(R.id.etNombre)
         spActividad = findViewById(R.id.spActividad)
@@ -101,9 +104,12 @@ class RegistroNoSocioActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnCancelar).setOnClickListener { finish() }
     }
 
+    private var personaAutocompletada = false
+
     /**
      * Autocompleta automáticamente el apellido y nombre si la persona
      * ya estuvo registrada previamente en la base de datos (como socio o no socio).
+     * Si el número de documento no posee registro previo, limpia los campos.
      */
     private fun configurarBusquedaPersona() {
         etNroDoc.setOnFocusChangeListener { _, tieneFoco ->
@@ -117,6 +123,8 @@ class RegistroNoSocioActivity : AppCompatActivity() {
                 val texto = s?.toString()?.trim() ?: ""
                 if (texto.length in 7..10) {
                     buscarYCompletarPersona()
+                } else if (texto.isEmpty() && personaAutocompletada) {
+                    limpiarCamposPersona()
                 }
             }
         })
@@ -125,18 +133,32 @@ class RegistroNoSocioActivity : AppCompatActivity() {
     private fun buscarYCompletarPersona() {
         val tipoDoc = spTipoDoc.selectedItem?.toString() ?: return
         val nroDoc = etNroDoc.text.toString().trim()
-        if (nroDoc.length < 6) return
+        if (nroDoc.length < 6) {
+            tvInfoDoc.visibility = View.GONE
+            if (personaAutocompletada) limpiarCamposPersona()
+            return
+        }
 
         val persona = bd.buscarPersonaPorDocumento(tipoDoc, nroDoc)
         if (persona != null) {
             etApellido.setText(persona.apellido)
             etNombre.setText(persona.nombre)
-            Toast.makeText(
-                this,
-                "Persona registrada encontrada: ${persona.apellido}, ${persona.nombre}",
-                Toast.LENGTH_SHORT
-            ).show()
+            personaAutocompletada = true
+            tvInfoDoc.visibility = View.VISIBLE
+            tvInfoDoc.setTextColor(getColor(R.color.estado_habilitado))
+            tvInfoDoc.text = "✓ Registrado/a en la base: ${persona.apellido}, ${persona.nombre}"
+        } else {
+            if (personaAutocompletada) limpiarCamposPersona()
+            tvInfoDoc.visibility = View.VISIBLE
+            tvInfoDoc.setTextColor(getColor(R.color.texto_secundario))
+            tvInfoDoc.text = "ℹ Documento nuevo (sin registro previo)"
         }
+    }
+
+    private fun limpiarCamposPersona() {
+        etApellido.text.clear()
+        etNombre.text.clear()
+        personaAutocompletada = false
     }
 
     // ------------------------------------------------------------------------------------

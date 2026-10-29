@@ -59,6 +59,16 @@
                 android:maxLength="9" />
 
             <TextView
+                android:id="@+id/tvInfoDoc"
+                style="@style/TextoAyuda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:text="✓ Registrado/a en la base: LOPEZ, Martin"
+                tools:visibility="visible" />
+
+            <TextView
                 style="@style/TextoCampo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
